@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}기상 데이터 시각화{% endblock %}
+
+{% block content %}
+    {#<div class="w-full max-w-7xl mx-auto">#}
+
+
+        <div class="w-full px-4"> <!-- ✅ 전체 폭 -->
+
+        <!-- ✅ 선택 필터 -->
+        <section class="bg-white shadow-md rounded-xl p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">🌦️ 기상 시각화 설정</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                    <label for="crop" class="block text-sm font-medium text-gray-700">작물</label>
+                    <select id="crop" class="w-full border rounded-md px-3 py-2">
+                        <option value="">Select Crop</option>
+                        {% for crop in crops %}
+                            <option value="{{ crop }}">{{ crop }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="year" class="block text-sm font-medium text-gray-700">연도</label>
+                    <select id="year" class="w-full border rounded-md px-3 py-2">
+                        <option value="">Select Year</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="country" class="block text-sm font-medium text-gray-700">국가</label>
+                    <select id="country" class="w-full border rounded-md px-3 py-2">
+                        <option value="">Select Country</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="state" class="block text-sm font-medium text-gray-700">주</label>
+                    <select id="state" class="w-full border rounded-md px-3 py-2">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+
+                <div id="variant-group" class="hidden">
+                    <label for="variant" class="block text-sm font-medium text-gray-700">Wheat Variant</label>
+                    <select id="variant" class="w-full border rounded-md px-3 py-2">
+                        <option value="">Select Variant</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="mode" class="block text-sm font-medium text-gray-700">모드</label>
+                    <select id="mode" class="w-full border rounded-md px-3 py-2">
+                        <option value="static">정적 이미지</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="variable-group" class="block text-sm font-medium text-gray-700">변수 그룹</label>
+<select id="variable-group" class="w-full border rounded-md px-3 py-2">
+                        <option value="">Select Group</option>
+                        <option value="pr">강수량 (pr)</option>
+                        <option value="temp">기온 (temp)</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ 시각화 결과 -->
+{#        <section class="bg-white shadow-md rounded-xl p-6">#}
+                    <!-- 지도 -->
+            <section class="flex flex-col lg:flex-row gap-6">
+
+       <div class="flex-1 bg-white shadow-md rounded-xl p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">🗺️ 지도</h2>
+            <div id="map" class="w-full h-[650px] rounded-lg"></div>
+        </div>
+        <aside class="flex-1 bg-white shadow-md rounded-xl p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">📈 시각화 결과</h2>
+
+            <!-- 탭 메뉴 -->
+            <div class="flex border-b mb-4">
+                <button id="tab-timeseries" class="px-4 py-2 border-b-2 border-blue-500 text-blue-500 font-semibold">
+                    시계열 그래프
+                </button>
+                <button id="tab-zscore" class="px-4 py-2 border-b-2 border-transparent text-gray-500">
+                    Z-score
+                </button>
+            </div>
+
+            <!-- 시계열 그래프 컨테이너 -->
+            <div id="timeseries-container" class="w-full min-h-[300px]">
+                <div id="climate-plot" class="w-full min-h-[300px]"></div>
+            </div>
+
+            <!-- Z-score 컨테이너 (초기에는 숨김) -->
+            <div id="zscore-container" class="w-full min-h-[300px] hidden">
+                <div id="climate-zscore-plot" class="w-full min-h-[300px]"></div>
+            </div>
+          </aside>
+            </section>
+    </div>
+
+    <!-- ✅ JavaScript -->
+
+    <script>
+        // Wheat 선택 시 Variant 표시
+        document.addEventListener("DOMContentLoaded", function () {
+            const cropSelect = document.getElementById("crop");
+            const variantGroup = document.getElementById("variant-group");
+
+            cropSelect.addEventListener("change", function () {
+                if (this.value.toLowerCase() === "wheat") {
+                    variantGroup.classList.remove("hidden");
+                } else {
+                    variantGroup.classList.add("hidden");
+                }
+            });
+        });
+    </script>
+
+<script src="{% static 'js/climate_map_logic.js' %}"></script>
+    <script src="{% static 'js/boundary_logic.js' %}"></script>
+
+    <script src="{% static 'js/climate_plot_logic.js' %}"></script>
+
+
+{% endblock %}

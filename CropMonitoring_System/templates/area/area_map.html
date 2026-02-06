@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="w-full px-4">
+
+        <!-- 🎛 필터 -->
+        <section class="bg-white shadow rounded-xl p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select id="crop" class="border rounded p-2">
+                    {% for crop in crops %}
+                        <option value="{{ crop }}">{{ crop }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="year" class="border rounded p-2">
+                    {% for y in years %}
+                        <option value="{{ y }}">{{ y }}</option>
+                    {% endfor %}
+                </select>
+                <select id="country" class="border rounded p-2">
+                    {% for c in countries %}
+                        <option value="{{ c.iso_code }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button id="map-update-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">업데이트
+                </button>
+            </div>
+
+            <!-- 데이터 생성일 표시 -->
+            <div class="flex justify-end mt-2">
+                <p class="text-xs text-gray-500">Cropmask data generated on October 30</p>
+            </div>
+        </section>
+
+        <!-- 🗺 지도 + 📊 그래프 -->
+        <section class="flex flex-col lg:flex-row gap-6">
+
+            <!-- 왼쪽: 지도 -->
+            <div class="flex-1 bg-white shadow-md rounded-xl p-4">
+                <h2 class="text-lg font-semibold mb-2">🗺️ 단계구분도 지도</h2>
+                <div id="map" class="w-full h-[600px] rounded border"></div>
+
+            </div>
+
+            <!-- 오른쪽: 바 그래프 -->
+            <div class="flex-1 bg-white shadow-md rounded-xl p-4">
+                <h2 class="text-lg font-semibold mb-2">📊 주별 재배 면적 비교</h2>
+                <div id="area-bar" class="h-[400px]"></div>
+
+                <!-- 🔽 면적 비교 표 -->
+                <div class="overflow-x-auto mt-4">
+                    <table id="area-table" class="min-w-full text-sm text-center border-collapse">
+                        <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border p-2">State</th>
+                            <th class="border p-2">평년</th>
+                            <th class="border p-2">전년도</th>
+                            <th class="border p-2">올해</th>
+                            <th class="border p-2">작년대비 증감%</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- 🧪 NIRv 그래프 섹션 -->
+        <section class="mt-8 bg-white shadow-md rounded-xl p-6">
+            <h2 class="text-lg font-semibold mb-4">🌱 NIRv 다중 시계열 비교</h2>
+
+            <!-- 탭 메뉴 -->
+            <div class="flex border-b mb-4">
+                <button id="tab-nirv" class="px-4 py-2 border-b-2 border-blue-500 text-blue-500 font-semibold">
+                    NIRv 시계열
+                </button>
+                <button id="tab-zscore" class="px-4 py-2 border-b-2 border-transparent text-gray-500">
+                    Z-score 등급
+                </button>
+            </div>
+
+            <!-- 다중 시계열 카드 영역 -->
+            <div id="multi-nirv-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+            <!-- Z-score 카드 영역 (초기에는 숨김) -->
+            <div id="multi-zscore-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></div>
+        </section>
+
+    </div>
+
+    <!-- 📦 스크립트 -->
+    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet"/>
+    <script src="{% static 'js/area_map_logic.js' %}"></script>
+    <script src="{% static 'js/nirv_plot_multi.js' %}"></script>
+
+{% endblock %}

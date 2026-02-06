@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="w-full px-4">
+  <section class="flex flex-col lg:flex-row gap-6">
+
+    <!-- 🗺️ 왼쪽 지도 영역 (비워둠) -->
+    <div class="flex-1 bg-gray-100 border border-dashed h-[600px] rounded-xl flex items-center justify-center">
+      <span class="text-gray-400">[추후 지도 표시 영역]</span>
+    </div>
+
+    <!-- 📊 오른쪽: 선택 UI + 그래프 -->
+    <div class="flex-1 bg-white shadow-md rounded-xl p-4">
+      <h2 class="text-lg font-semibold mb-3">NIRv 시계열 비교</h2>
+
+      <!-- 🎛 드롭다운 필터 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <select id="crop" class="border rounded p-2">
+          <option value="">작물 선택</option>
+          {% for crop in crops %}
+            <option value="{{ crop }}">{{ crop }}</option>
+          {% endfor %}
+        </select>
+
+        <select id="year" class="border rounded p-2">
+          <option value="">연도 선택</option>
+          <!-- JS에서 crop 선택 시 동적으로 로딩 -->
+        </select>
+
+        <select id="state" class="border rounded p-2">
+          <option value="">주 선택</option>
+          <!-- JS에서 year 선택 시 동적으로 로딩 -->
+        </select>
+      </div>
+
+      <button id="load-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">업데이트</button>
+
+      <!-- 탭 메뉴 -->
+      <div class="flex border-b mt-6 mb-4">
+        <button id="tab-nirv" class="px-4 py-2 border-b-2 border-blue-500 text-blue-500 font-semibold">
+          NIRv 시계열
+        </button>
+        <button id="tab-zscore" class="px-4 py-2 border-b-2 border-transparent text-gray-500">
+          Z-score 등급
+        </button>
+      </div>
+
+      <!-- NIRv 시계열 컨테이너 -->
+      <div id="nirv-container" class="mb-6">
+        <div id="nirv-plot" class="h-[450px] w-full"></div>
+      </div>
+
+      <!-- Z-score 컨테이너 (초기에는 숨김) -->
+      <div id="zscore-container" class="hidden">
+        <div id="zscore-plot" class="h-[450px] w-full"></div>
+      </div>
+
+    </div>
+
+  </section>
+</div>
+
+<!-- 📦 Plotly & JS -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{% static 'js/nirv_plot.js' %}"></script>
+{% endblock %}

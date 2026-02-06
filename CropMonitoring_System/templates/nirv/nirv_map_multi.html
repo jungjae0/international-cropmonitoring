@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="w-full px-4">
+        <section class="flex flex-col gap-6">
+
+            <!-- 🔧 상단 필터 -->
+            <div class="bg-white shadow-md rounded-xl p-4">
+                <h2 class="text-lg font-semibold mb-3">NIRv 다중 시계열 비교</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <select id="crop" class="border rounded p-2">
+                        <option value="">작물 선택</option>
+                        {% for crop in crops %}
+                            <option value="{{ crop }}">{{ crop }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select id="year" class="border rounded p-2">
+                        <option value="">연도 선택</option>
+                        <!-- crop 선택 시 동적 로딩 -->
+                    </select>
+
+                    <button id="load-btn"
+                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 col-span-1 md:col-span-1">
+                        업데이트
+                    </button>
+                </div>
+            </div>
+
+<div class="bg-white shadow-md rounded-xl p-4">
+  <h2 class="text-lg font-semibold mb-3">NIRv 다중 시계열 비교</h2>
+
+  <div class="flex border-b mb-4">
+    <button id="tab-nirv" class="tab-btn px-4 py-2 border-b-2 border-blue-500 text-blue-500 font-semibold">
+      일반 시계열
+    </button>
+    <button id="tab-zscore" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-blue-500">
+      Z-score 등급
+    </button>
+  </div>
+
+  <div id="multi-nirv-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+  <div id="multi-zscore-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden"></div>
+</div>
+
+
+        </section>
+    </div>
+
+    <!-- 📦 Plotly & JS -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{% static 'js/nirv_plot_multi.js' %}"></script>
+{% endblock %}
