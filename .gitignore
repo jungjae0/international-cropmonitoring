@@ -38,3 +38,4 @@ rda_offline_crop_analysis_system/crop_analysis_system/staticfiles
 *.png
 cropweb/crop_monitor/static/crop_calendar.geojson
 *.geojson
+cropweb/crop_monitor/static/crop_calendar.csv
