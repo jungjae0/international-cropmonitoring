@@ -1,0 +1,1 @@
+cropweb/crop_monitor/static/crop_calendar.csv filter=lfs diff=lfs merge=lfs -text
