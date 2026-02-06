@@ -1,0 +1,27 @@
+{
+    "auth": {
+        "url": "https://cds.climate.copernicus.eu/api",
+        "key": "YOUR CDS API KEY"
+    },
+    "settings": {
+        "dataset_name": "derived-era5-single-levels-daily-statistics",
+        "root_dir": "D:/SatelliteData/ERA5",
+        "logs_dir": "D:/SatelliteData/ERA5/logs",
+        "save_csv_log": true,
+        "lookback_days": 10
+    },
+    "regions": {
+        "BRA": {"min_x": -74.0, "min_y": -34.0, "max_x": -34.0, "max_y": 5.5},
+        "ARG": {"min_x": -73.6, "min_y": -55.2, "max_x": -53.6, "max_y": -21.8},
+        "AUS": {"min_x": 113.0, "min_y": -44.0, "max_x": 154.0, "max_y": -10.0},
+        "USA": {"min_x": -125.0, "min_y": 24.0, "max_x": -66.0, "max_y": 49.0},
+        "UKR": {"min_x": 22.0, "min_y": 44.0, "max_x": 40.0, "max_y": 52.5}
+    },
+    "variables": [
+        "2m_temperature",
+        "total_precipitation",
+        "surface_solar_radiation_downwards"
+    ]
+}
+
+

@@ -1,0 +1,13 @@
+.path-preview {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.path-preview.is-ok {
+  color: #166534;
+}
+
+.path-preview.is-bad {
+  color: #b91c1c;
+}

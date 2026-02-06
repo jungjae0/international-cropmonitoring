@@ -1,0 +1,70 @@
+services:
+  web:
+#    build: .
+    image: crop_analysis_system-web:latest
+    container_name: crop_web
+    working_dir: /app/crop_analysis_system
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:9000
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/app/crop_analysis_system
+      - ./media:/app/crop_analysis_system/media
+      - ./db.sqlite3:/app/crop_analysis_system/db.sqlite3
+      - ./staticfiles:/app/crop_analysis_system/staticfiles
+    depends_on:
+      - redis
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  worker:
+#    build: .
+    image: crop_analysis_system-web:latest
+    container_name: crop_worker
+    working_dir: /app/crop_analysis_system
+    command: celery -A config worker --loglevel=info --pool=threads # --pool=solo --loglevel=info # -l info
+    env_file:
+      - .env
+    volumes:
+      - .:/app/crop_analysis_system
+      - ./media:/app/crop_analysis_system/media
+      - ./db.sqlite3:/app/crop_analysis_system/db.sqlite3
+      - ./staticfiles:/app/crop_analysis_system/staticfiles
+    depends_on:
+      - redis
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  redis:
+    image: redis:7-alpine
+    container_name: crop_redis
+    ports:
+      - "6379:6379"
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: crop_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./staticfiles:/app/staticfiles:ro
+    depends_on:
+      - web
+volumes:
+  staticfiles:

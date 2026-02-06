@@ -1,0 +1,304 @@
+{
+  "states": [
+    {
+      "name": "Alabama",
+      "nameKo": "앨라배마",
+      "abbreviation": "AL",
+      "hasData": false
+    },
+    {
+      "name": "Alaska",
+      "nameKo": "알래스카",
+      "abbreviation": "AK",
+      "hasData": false
+    },
+    {
+      "name": "Arizona",
+      "nameKo": "애리조나",
+      "abbreviation": "AZ",
+      "hasData": false
+    },
+    {
+      "name": "Arkansas",
+      "nameKo": "아칸소",
+      "abbreviation": "AR",
+      "hasData": true
+    },
+    {
+      "name": "California",
+      "nameKo": "캘리포니아",
+      "abbreviation": "CA",
+      "hasData": false
+    },
+    {
+      "name": "Colorado",
+      "nameKo": "콜로라도",
+      "abbreviation": "CO",
+      "hasData": false
+    },
+    {
+      "name": "Connecticut",
+      "nameKo": "코네티컷",
+      "abbreviation": "CT",
+      "hasData": false
+    },
+    {
+      "name": "Delaware",
+      "nameKo": "델라웨어",
+      "abbreviation": "DE",
+      "hasData": true
+    },
+    {
+      "name": "Florida",
+      "nameKo": "플로리다",
+      "abbreviation": "FL",
+      "hasData": false
+    },
+    {
+      "name": "Georgia",
+      "nameKo": "조지아",
+      "abbreviation": "GA",
+      "hasData": false
+    },
+    {
+      "name": "Hawaii",
+      "nameKo": "하와이",
+      "abbreviation": "HI",
+      "hasData": false
+    },
+    {
+      "name": "Idaho",
+      "nameKo": "아이다호",
+      "abbreviation": "ID",
+      "hasData": true
+    },
+    {
+      "name": "Illinois",
+      "nameKo": "일리노이",
+      "abbreviation": "IL",
+      "hasData": false
+    },
+    {
+      "name": "Indiana",
+      "nameKo": "인디애나",
+      "abbreviation": "IN",
+      "hasData": true
+    },
+    {
+      "name": "Iowa",
+      "nameKo": "아이오와",
+      "abbreviation": "IA",
+      "hasData": true
+    },
+    {
+      "name": "Kansas",
+      "nameKo": "캔자스",
+      "abbreviation": "KS",
+      "hasData": true
+    },
+    {
+      "name": "Kentucky",
+      "nameKo": "켄터키",
+      "abbreviation": "KY",
+      "hasData": false
+    },
+    {
+      "name": "Louisiana",
+      "nameKo": "루이지애나",
+      "abbreviation": "LA",
+      "hasData": false
+    },
+    {
+      "name": "Maine",
+      "nameKo": "메인",
+      "abbreviation": "ME",
+      "hasData": false
+    },
+    {
+      "name": "Maryland",
+      "nameKo": "메릴랜드",
+      "abbreviation": "MD",
+      "hasData": false
+    },
+    {
+      "name": "Massachusetts",
+      "nameKo": "매사추세츠",
+      "abbreviation": "MA",
+      "hasData": false
+    },
+    {
+      "name": "Michigan",
+      "nameKo": "미시간",
+      "abbreviation": "MI",
+      "hasData": false
+    },
+    {
+      "name": "Minnesota",
+      "nameKo": "미네소타",
+      "abbreviation": "MN",
+      "hasData": false
+    },
+    {
+      "name": "Mississippi",
+      "nameKo": "미시시피",
+      "abbreviation": "MS",
+      "hasData": false
+    },
+    {
+      "name": "Missouri",
+      "nameKo": "미주리",
+      "abbreviation": "MO",
+      "hasData": false
+    },
+    {
+      "name": "Montana",
+      "nameKo": "몬태나",
+      "abbreviation": "MT",
+      "hasData": false
+    },
+    {
+      "name": "Nebraska",
+      "nameKo": "네브래스카",
+      "abbreviation": "NE",
+      "hasData": false
+    },
+    {
+      "name": "Nevada",
+      "nameKo": "네바다",
+      "abbreviation": "NV",
+      "hasData": false
+    },
+    {
+      "name": "New Hampshire",
+      "nameKo": "뉴햄프셔",
+      "abbreviation": "NH",
+      "hasData": false
+    },
+    {
+      "name": "New Jersey",
+      "nameKo": "뉴저지",
+      "abbreviation": "NJ",
+      "hasData": false
+    },
+    {
+      "name": "New Mexico",
+      "nameKo": "뉴멕시코",
+      "abbreviation": "NM",
+      "hasData": false
+    },
+    {
+      "name": "New York",
+      "nameKo": "뉴욕",
+      "abbreviation": "NY",
+      "hasData": false
+    },
+    {
+      "name": "North Carolina",
+      "nameKo": "노스캐롤라이나",
+      "abbreviation": "NC",
+      "hasData": false
+    },
+    {
+      "name": "North Dakota",
+      "nameKo": "노스다코타",
+      "abbreviation": "ND",
+      "hasData": true
+    },
+    {
+      "name": "Ohio",
+      "nameKo": "오하이오",
+      "abbreviation": "OH",
+      "hasData": true
+    },
+    {
+      "name": "Oklahoma",
+      "nameKo": "오클라호마",
+      "abbreviation": "OK",
+      "hasData": true
+    },
+    {
+      "name": "Oregon",
+      "nameKo": "오리건",
+      "abbreviation": "OR",
+      "hasData": false
+    },
+    {
+      "name": "Pennsylvania",
+      "nameKo": "펜실베이니아",
+      "abbreviation": "PA",
+      "hasData": false
+    },
+    {
+      "name": "Rhode Island",
+      "nameKo": "로드아일랜드",
+      "abbreviation": "RI",
+      "hasData": false
+    },
+    {
+      "name": "South Carolina",
+      "nameKo": "사우스캐롤라이나",
+      "abbreviation": "SC",
+      "hasData": false
+    },
+    {
+      "name": "South Dakota",
+      "nameKo": "사우스다코타",
+      "abbreviation": "SD",
+      "hasData": false
+    },
+    {
+      "name": "Tennessee",
+      "nameKo": "테네시",
+      "abbreviation": "TN",
+      "hasData": true
+    },
+    {
+      "name": "Texas",
+      "nameKo": "텍사스",
+      "abbreviation": "TX",
+      "hasData": true
+    },
+    {
+      "name": "Utah",
+      "nameKo": "유타",
+      "abbreviation": "UT",
+      "hasData": false
+    },
+    {
+      "name": "Vermont",
+      "nameKo": "버몬트",
+      "abbreviation": "VT",
+      "hasData": true
+    },
+    {
+      "name": "Virginia",
+      "nameKo": "버지니아",
+      "abbreviation": "VA",
+      "hasData": true
+    },
+    {
+      "name": "Washington",
+      "nameKo": "워싱턴",
+      "abbreviation": "WA",
+      "hasData": true
+    },
+    {
+      "name": "West Virginia",
+      "nameKo": "웨스트버지니아",
+      "abbreviation": "WV",
+      "hasData": false
+    },
+    {
+      "name": "Wisconsin",
+      "nameKo": "위스콘신",
+      "abbreviation": "WI",
+      "hasData": false
+    },
+    {
+      "name": "Wyoming",
+      "nameKo": "와이오밍",
+      "abbreviation": "WY",
+      "hasData": true
+    }
+  ]
+}

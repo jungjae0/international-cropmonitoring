@@ -1,0 +1,38 @@
+{
+  "auth": {
+    "access_key": "YOUR CDSE ACCESS KEY",
+    "secret_key": "YOUR CDSE SECRET KEY"
+  },
+  "settings": {
+    "root_dir": "./CropMonitoring",
+    "mode": "TEST", 
+    "max_threads": 4,
+    "do_search": true,
+    "do_download": true
+  },
+  "path_settings": {
+    "log_dir": "Logs",
+    "search_history_dir": "Search_History",
+    "report_dir": "Reports"
+  },
+  "date_settings": {
+    "comment": "mode는 'fixed' (고정 날짜) 또는 'relative' (상대 날짜) 중 하나 선택",
+    "mode": "fixed",
+    "fixed_range": {
+      "start_date": "2024-05-01",
+      "end_date": "2024-05-10"
+    },
+    "relative_range": {
+      "days_before": 5
+    }
+  },
+  "target_regions": {
+    "USA": {"min_x": -125.0, "min_y": 24.0, "max_x": -66.0, "max_y": 49.0},
+    "BRA": {"min_x": -74.0, "min_y": -34.0, "max_x": -34.0, "max_y": 5.5},
+    "ARG": {"min_x": -73.6, "min_y": -55.2, "max_x": -53.6, "max_y": -21.8},
+    "UKR": {"min_x": 22.0, "min_y": 44.0, "max_x": 40.0, "max_y": 52.5},
+    "AUS": {"min_x": 113.0, "min_y": -44.0, "max_x": 154.0, "max_y": -10.0}
+  }
+}
+
+

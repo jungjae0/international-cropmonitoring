@@ -1,0 +1,45 @@
+{% if outputs %}
+<div class="card rounded-top-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-end mb-2">
+            <button type="button" class="btn btn-secondary btn-sm js-download-outputs" data-step="{{ step_name }}">
+                <i class="bi bi-download"></i> Download Selected
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                      <th><input type="checkbox" class="form-check-input output-select-all" data-step="{{ step_name }}" aria-label="Select all" /></th>
+                      <th>Job</th>
+                      <th>File</th>
+                      <th>Size</th>
+                      <th>Modified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for output in outputs %}
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input output-checkbox" data-path="{{ output.absolute_path }}" aria-label="Select output" /></td>
+                        <td><a href="/core/jobs/{{ output.job_id }}/">#{{ output.job_id }}</a></td>
+                        <td>
+                            <a href="/core/jobs/{{ output.job_id }}/outputs/download/?path={{ output.absolute_path|urlencode }}">
+                                {{ output.relative_path }}
+                            </a>
+                        </td>
+                        <td data-bytes="{{ output.size_bytes }}">0 B</td>
+                        <td>{{ output.file_modified_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card rounded-top-0">
+    <div class="card-body text-center text-muted">
+        No outputs found for this step.
+    </div>
+</div>
+{% endif %}

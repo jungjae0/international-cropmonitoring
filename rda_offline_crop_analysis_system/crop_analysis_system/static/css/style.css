@@ -1,0 +1,42 @@
+/* Custom styles for the Crop Analysis System */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.job-row {
+    cursor: pointer;
+}
+
+#states {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.5rem;
+}
+
+#states .form-check {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 2rem;
+}
+
+#progress-log .log-entry {
+    padding: 2px 5px;
+    border-bottom: 1px solid #343a40;
+}
+#progress-log .log-entry:hover {
+    background-color: #343a40;
+}
+
+#progress-log .log-time {
+    color: #6c757d;
+    margin-right: 1rem;
+}
+
+.output-list {
+    max-height: 50vh;
+    overflow-y: auto;
+}

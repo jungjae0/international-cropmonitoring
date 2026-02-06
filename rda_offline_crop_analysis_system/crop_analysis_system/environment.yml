@@ -1,0 +1,23 @@
+name: process
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - django
+  - geopandas
+  - gunicorn
+  - rioxarray
+  - celery
+  - rasterio
+  - gdal
+  - dask
+  - ml-collections
+  - python-dotenv
+  - djangorestframework
+  - tqdm
+  - pillow
+  - pip:
+      - redis
+      - whitenoise

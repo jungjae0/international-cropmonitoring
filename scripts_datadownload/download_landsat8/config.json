@@ -1,0 +1,24 @@
+{
+    "auth": {
+        "username": "M2M USERNAME HERE",
+        "token": "M2M API TOKEN HERE"
+    },
+    "settings": {
+        "dataset_name": "landsat_ot_c2_l2",
+        "root_dir": "D:/SatelliteData/Landsat8",
+        "logs_dir": "D:/SatelliteData/Landsat8/logs",
+        "max_threads": 4,
+        "lookback_days": 5,
+        "save_csv_log": true
+    },
+    "regions": {
+        "Brazil":    {"min_x": -74.0, "min_y": -34.0, "max_x": -34.0, "max_y": 5.5},
+        "Argentina": {"min_x": -73.6, "min_y": -55.2, "max_x": -53.6, "max_y": -21.8},
+        "Australia": {"min_x": 113.0, "min_y": -44.0, "max_x": 154.0, "max_y": -10.0},
+        "USA":       {"min_x": -125.0, "min_y": 24.0, "max_x": -66.0, "max_y": 49.0},
+        "Ukraine":   {"min_x": 22.0, "min_y": 44.0, "max_x": 40.0, "max_y": 52.5}
+    }
+}
+
+
+

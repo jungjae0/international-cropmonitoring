@@ -1,0 +1,178 @@
+/* 기본 레이아웃 */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+/* 상단 내비게이션 */
+header.navbar {
+  background-color: #1d3557;
+  padding: 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .nav-menu {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 40px;
+}
+
+.navbar .nav-menu li a {
+  color: #ffffff;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-menu li a:hover {
+  color: #a8dadc;
+}
+
+/* 페이지 전체 콘텐츠 */
+.content {
+  padding: 20px 30px;
+  margin: 0 auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 맵 선택 컨트롤 */
+.map-controls {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;         /* 가운데 정렬 */
+  align-items: center;
+}
+
+.map-controls h2 {
+  margin-bottom: 15px;
+  color: #1d3557;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+select, label {
+  font-size: 14px;
+}
+
+select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+/* 지도 + 그래프 레이아웃 (60:40) */
+.map-and-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+}
+
+#map {
+  flex: 0 0 60%;
+  height: 80vh;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.info.legend {
+  background: white;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.map-legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+/* 면적 요약 영역 */
+.area-summary {
+  flex: 0 0 40%;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* 면적 총합 */
+#area-total {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #1d3557;
+}
+
+/* 정렬 버튼 */
+#area-ranking-controls {
+  margin-top: 10px;
+}
+
+#area-ranking-controls button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #457b9d;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#area-ranking-controls button:hover {
+  background-color: #2a5877;
+}
+
+/* 주별 면적 리스트 */
+#area-ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+#area-ranking-list li {
+  padding: 6px 4px;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#area-chart {
+  margin-top: 20px;
+  width: 100%;
+  height: 800px; /* 기존 300px → 400px로 확대 */
+  box-sizing: border-box;
+}
+
+
+.leaflet-interactive {
+  cursor: default;
+}

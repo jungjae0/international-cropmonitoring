@@ -1,0 +1,88 @@
+{% extends "core/base.html" %}
+{% block title %}Job Outputs{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-filter"></i> Filter Outputs
+    </div>
+    <div class="card-body">
+         <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="filter-country" class="form-label">Country</label>
+                <select id="filter-country" name="country" class="form-select">
+                    <option value="">All</option>
+                    {% for country in countries %}
+                    <option value="{{ country }}"{% if selected_country == country %} selected{% endif %}>{{ country }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-year" class="form-label">Year/Suffix</label>
+                <select id="filter-year" name="year_suffix" class="form-select">
+                    <option value="">All</option>
+                    {% for year in year_suffixes %}
+                    <option value="{{ year }}"{% if selected_year_suffix == year %} selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="filter-output" class="form-label">Output Name</label>
+                <select id="filter-output" name="output_name" class="form-select">
+                    <option value="">All</option>
+                    {% for name in output_names %}
+                    <option value="{{ name }}"{% if selected_output_name == name %} selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<ul class="nav nav-tabs" id="output-tabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="out-inference-tab" data-bs-toggle="tab" data-bs-target="#out-inference" type="button" role="tab" aria-controls="out-inference" aria-selected="true">Inference</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="out-merge-tab" data-bs-toggle="tab" data-bs-target="#out-merge" type="button" role="tab" aria-controls="out-merge" aria-selected="false">Merge</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="out-area-tab" data-bs-toggle="tab" data-bs-target="#out-area" type="button" role="tab" aria-controls="out-area" aria-selected="false">Area</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="out-maps-tab" data-bs-toggle="tab" data-bs-target="#out-maps" type="button" role="tab" aria-controls="out-maps" aria-selected="false">Maps</button>
+  </li>
+</ul>
+
+<div class="tab-content" id="output-tabs-content">
+  <div class="tab-pane fade show active" id="out-inference" role="tabpanel" aria-labelledby="out-inference-tab">
+    {% with outputs=outputs_by_step.inference_tiles %}
+        {% include "core/partials/output_table.html" with step_name="inference_tiles" outputs=outputs %}
+    {% endwith %}
+  </div>
+  <div class="tab-pane fade" id="out-merge" role="tabpanel" aria-labelledby="out-merge-tab">
+    {% with outputs=outputs_by_step.merged_cropmasks %}
+        {% include "core/partials/output_table.html" with step_name="merged_cropmasks" outputs=outputs %}
+    {% endwith %}
+  </div>
+  <div class="tab-pane fade" id="out-area" role="tabpanel" aria-labelledby="out-area-tab">
+     {% with outputs=outputs_by_step.calculate_area %}
+        {% include "core/partials/output_table.html" with step_name="calculate_area" outputs=outputs %}
+    {% endwith %}
+  </div>
+  <div class="tab-pane fade" id="out-maps" role="tabpanel" aria-labelledby="out-maps-tab">
+    <div class="card">
+        <div class="card-body">
+            {% if not selected_country and not selected_year_suffix and not selected_output_name %}
+                <div class="alert alert-info">Please apply at least one filter to view the map.</div>
+            {% else %}
+                <div id="job-outputs-map" style="height: 70vh;"></div>
+            {% endif %}
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

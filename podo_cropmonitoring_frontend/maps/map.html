@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/maps/map.css">
+  <title>CropMonitor</title>
+  <script src="/script.js"></script>
+</head>
+
+<body>
+  <!-- 네비게이션 -->
+  <div class="nav-overlay" id="nav-overlay"></div>
+  <div class="nav-dropdown" id="nav-dropdown">
+    <!-- 모바일 헤더 -->
+    <div class="mobile-header">
+      <button class="back-button" id="back-button" type="button" aria-label="닫기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M12.233 4.4545C12.6723 4.89384 12.6723 5.60616 12.233 6.0455L6.27849 12L12.233 17.9545C12.6723 18.3938 12.6723 19.1062 12.233 19.5455C11.7937 19.9848 11.0813 19.9848 10.642 19.5455L3.892 12.7955C3.45267 12.3562 3.45267 11.6438 3.892 11.2045L10.642 4.4545C11.0813 4.01517 11.7937 4.01517 12.233 4.4545Z"
+            fill="#21272A" />
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.5 12C4.5 11.3787 5.00368 10.875 5.625 10.875H19.3125C19.9338 10.875 20.4375 11.3787 20.4375 12C20.4375 12.6213 19.9338 13.125 19.3125 13.125H5.625C5.00368 13.125 4.5 12.6213 4.5 12Z"
+            fill="#21272A" />
+        </svg>
+      </button>
+      <span class="mobile-header-title">바로가기</span>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <ul class="mobile-menu">
+      <li class="mobile-menu-item">
+        <a href="/">메인</a>
+      </li>
+      <li class="mobile-menu-item">
+        <a href="/maps/map.html" class="active">전세계 보기</a>
+      </li>
+      <li class="mobile-menu-item has-submenu">
+        <span class="submenu-title">국가별 보기</span>
+        <ul class="submenu country-submenu">
+          <li class="submenu-item country-toggle" data-country="미국">
+            <span>미국</span>
+            <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M0.159916 1.08336L3.98203 5.54367C4.04363 5.61553 4.12006 5.67321 4.20605 5.71275C4.29205 5.7523 4.38558 5.77277 4.48023 5.77277C4.57488 5.77277 4.66841 5.7523 4.75441 5.71275C4.8404 5.67321 4.91682 5.61553 4.97843 5.54367L8.80054 1.08336C9.16531 0.657617 8.86288 0 8.30234 0H0.657026C0.0964787 0 -0.205943 0.657617 0.159916 1.08336Z"
+                fill="#21272A" />
+            </svg>
+          </li>
+          <ul class="crop-submenu" data-country="미국">
+            <li class="crop-item"><a href="/country/america.html">국가로 이동</a></li>
+            <li class="crop-item"><a href="/country-crop/america/america-corn.html">옥수수</a></li>
+            <li class="crop-item"><a href="/country-crop/america/america-soybean.html">콩</a></li>
+            <li class="crop-item"><a href="/country-crop/america/america-wheat.html">밀</a></li>
+          </ul>
+          <li class="submenu-item country-toggle" data-country="브라질">
+            <span>브라질</span>
+            <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M0.159916 1.08336L3.98203 5.54367C4.04363 5.61553 4.12006 5.67321 4.20605 5.71275C4.29205 5.7523 4.38558 5.77277 4.48023 5.77277C4.57488 5.77277 4.66841 5.7523 4.75441 5.71275C4.8404 5.67321 4.91682 5.61553 4.97843 5.54367L8.80054 1.08336C9.16531 0.657617 8.86288 0 8.30234 0H0.657026C0.0964787 0 -0.205943 0.657617 0.159916 1.08336Z"
+                fill="#21272A" />
+            </svg>
+          </li>
+          <ul class="crop-submenu" data-country="브라질">
+            <li class="crop-item"><a href="#">국가로 이동</a></li>
+            <li class="crop-item"><a href="#">옥수수</a></li>
+          </ul>
+          <li class="submenu-item country-toggle" data-country="우크라이나">
+            <span>우크라이나</span>
+            <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M0.159916 1.08336L3.98203 5.54367C4.04363 5.61553 4.12006 5.67321 4.20605 5.71275C4.29205 5.7523 4.38558 5.77277 4.48023 5.77277C4.57488 5.77277 4.66841 5.7523 4.75441 5.71275C4.8404 5.67321 4.91682 5.61553 4.97843 5.54367L8.80054 1.08336C9.16531 0.657617 8.86288 0 8.30234 0H0.657026C0.0964787 0 -0.205943 0.657617 0.159916 1.08336Z"
+                fill="#21272A" />
+            </svg>
+          </li>
+          <ul class="crop-submenu" data-country="우크라이나">
+            <li class="crop-item"><a href="#">국가로 이동</a></li>
+            <li class="crop-item"><a href="#">콩</a></li>
+          </ul>
+          <li class="submenu-item country-toggle" data-country="아르헨티나">
+            <span>아르헨티나</span>
+            <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M0.159916 1.08336L3.98203 5.54367C4.04363 5.61553 4.12006 5.67321 4.20605 5.71275C4.29205 5.7523 4.38558 5.77277 4.48023 5.77277C4.57488 5.77277 4.66841 5.7523 4.75441 5.71275C4.8404 5.67321 4.91682 5.61553 4.97843 5.54367L8.80054 1.08336C9.16531 0.657617 8.86288 0 8.30234 0H0.657026C0.0964787 0 -0.205943 0.657617 0.159916 1.08336Z"
+                fill="#21272A" />
+            </svg>
+          </li>
+          <ul class="crop-submenu" data-country="아르헨티나">
+            <li class="crop-item"><a href="#">국가로 이동</a></li>
+            <li class="crop-item"><a href="#">콩</a></li>
+            <li class="crop-item"><a href="#">밀</a></li>
+          </ul>
+          <li class="submenu-item country-toggle" data-country="호주">
+            <span>호주</span>
+            <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M0.159916 1.08336L3.98203 5.54367C4.04363 5.61553 4.12006 5.67321 4.20605 5.71275C4.29205 5.7523 4.38558 5.77277 4.48023 5.77277C4.57488 5.77277 4.66841 5.7523 4.75441 5.71275C4.8404 5.67321 4.91682 5.61553 4.97843 5.54367L8.80054 1.08336C9.16531 0.657617 8.86288 0 8.30234 0H0.657026C0.0964787 0 -0.205943 0.657617 0.159916 1.08336Z"
+                fill="#21272A" />
+            </svg>
+          </li>
+          <ul class="crop-submenu" data-country="호주">
+            <li class="crop-item"><a href="#">국가로 이동</a></li>
+            <li class="crop-item"><a href="#">옥수수</a></li>
+            <li class="crop-item"><a href="#">밀</a></li>
+          </ul>
+        </ul>
+      </li>
+    </ul>
+    <!-- 데스크탑 드롭다운 -->
+    <div class="dropdown-column desktop-only" id="country-column">
+      <a href="/country/america.html" class="dropdown-item country-item">미국</a>
+      <a href="#" class="dropdown-item country-item">브라질</a>
+      <a href="#" class="dropdown-item country-item">우크라이나</a>
+      <a href="#" class="dropdown-item country-item">아르헨티나</a>
+      <a href="#" class="dropdown-item country-item">호주</a>
+    </div>
+    <div class="dropdown-column crops-column desktop-only" id="crops-column">
+      <a href="/country-crop/america/america-corn.html" class="dropdown-item">옥수수</a>
+      <a href="/country-crop/america/america-soybean.html" class="dropdown-item">콩</a>
+      <a href="/country-crop/america/america-wheat.html" class="dropdown-item">밀</a>
+    </div>
+  </div>
+  <nav>
+    <a class="main-logo" href="/">
+      <img src="/assets/main-logo.png" alt="CropMonitor Logo">
+      <span>Crop Monitoring</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/">메인</a></li>
+      <li class="active"><a href="/maps/map.html">전세계 보기</a></li>
+      <li class="has-dropdown"><a href="#">국가별 보기</a></li>
+    </ul>
+    <button id="menu-button" type="button" aria-label="메뉴 열기">
+      <svg width="18" height="12" viewBox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 12H18V9.99984H0V12ZM0 6.99984H18V5.00016H0V6.99984ZM0 0V2.00016H18V0H0Z" />
+      </svg>
+    </button>
+  </nav>
+  <main class="map-page">
+    <div class="content-wrapper">
+      <div class="content-inner-wrapper">
+        <div class="map">
+          <div class="map-content">
+            <div class="map-title">
+              <h3>전세계 지도</h3>
+              <p>지도에서 수입 중인 국가를 확인할 수 있습니다.</p>
+            </div>
+            <div class="crop-list">
+              <!-- 실제 작목 리스트가 들어갈 공간 -->
+              <!-- 배열 등으로 정제한 데이터를 아래 crop을 통해 map을 사용하여 표기 -->
+              <div class="crop" id="corn"><a href="/maps/crops/corn.html">옥수수</a></div>
+              <div class="crop" id="soybean"><a href="/maps/crops/soybean.html">콩</a></div>
+              <div class="crop" id="wheat"><a href="/maps/crops/wheat.html">밀</a></div>
+            </div>
+          </div>
+          <!-- 배경지도 위 오버레이 컨텐츠가 들어갈 공간 -->
+          <div class="map-container">
+            <img src="/assets/bg-map.png" alt="Background Map">
+            <div class="overlay-wrapper">
+              <div class="overlay">
+                <div class="overlay-country" id="america"><a href="/country/america.html">미국</a></div>
+              </div>
+            </div>
+          </div>
+          <!-- 주요 이슈가 들어갈 공간 -->
+          <!-- 실제 이슈데이터를 배열 등으로 정제하여 map을 사용하여 표기 -->
+          <div class="issue">
+            <h1>주요 이슈</h1>
+            <div class="issue-list-wrapper">
+              <div class="issue-list">
+                <div class="country-issue" id="america">
+                  <div class="issue-header">
+                    <h3>미국</h3>
+                    <p>2025-11-13</p>
+                  </div>
+                  <ul class="issue-content">
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  </ul>
+                </div>
+                <div class="country-issue" id="australia">
+                  <div class="issue-header">
+                    <h3>호주</h3>
+                    <p>2025-11-13</p>
+                  </div>
+                  <ul class="issue-content">
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  </ul>
+                </div>
+                <div class="country-issue" id="brazil">
+                  <div class="issue-header">
+                    <h3>브라질</h3>
+                    <p>2025-11-13</p>
+                  </div>
+                  <ul class="issue-content">
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  </ul>
+                </div>
+                <!-- <div class="country-issue" id="argentina">
+                <h3>아르헨티나</h3>
+                <ul>
+                  <li>Issue Text 1</li>
+                  <li>Issue Text 2</li>
+                  <li>Issue Text 3</li>
+                </ul>
+              </div>
+              <div class="country-issue" id="ukraine">
+                <h3>우크라이나</h3>
+                <ul>
+                  <li>Issue Text 1</li>
+                  <li>Issue Text 2</li>
+                  <li>Issue Text 3</li>
+                </ul>
+              </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 데이터 패널 -->
+        <aside class="data-panel">
+          <div class="panel-header">
+            <!-- 원하시는 title로 변경하시면 됩니다. -->
+            <h1>전세계 주요 작황 정보</h1>
+            <div class="links">
+              <!-- 실제 작목 리스트가 들어갈 공간 -->
+              <!-- 배열 등으로 정제한 데이터를 아래 crop을 통해 map을 사용하여 표기 -->
+              <div class="crop-link" id="corn"><a href="/maps/crops/corn.html">옥수수</a></div>
+              <div class="crop-link" id="soybean"><a href="/maps/crops/soybean.html">콩</a></div>
+              <div class="crop-link" id="wheat"><a href="/maps/crops/wheat.html">밀</a></div>
+            </div>
+            <p>국가 정보 바로가기</p>
+            <div class="links">
+              <div class="country-link" id="america"><a href="/country/america.html">미국</a></div>
+              <!-- <div class="country-link" id="australia"><a href="/country/australia.html">호주</a></div> -->
+              <!-- <div class="country-link" id="brazil"><a href="/country/brazil.html">브라질</a></div> -->
+            </div>
+          </div>
+          <!-- 주요 이슈가 들어갈 공간 -->
+          <!-- 실제 이슈데이터를 배열 등으로 정제하여 map을 사용하여 표기 -->
+          <div class="issue">
+            <h1>주요 이슈</h1>
+            <div class="issue-list-wrapper">
+              <div class="issue-list">
+                <div class="country-issue" id="america">
+                  <div class="issue-header">
+                    <h3>미국</h3>
+                    <p>2025-11-13</p>
+                  </div>
+                  <ul class="issue-content">
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  </ul>
+                </div>
+                <div class="country-issue" id="australia">
+                  <div class="issue-header">
+                    <h3>호주</h3>
+                    <p>2025-11-13</p>
+                  </div>
+                  <ul class="issue-content">
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  </ul>
+                </div>
+                <div class="country-issue" id="brazil">
+                  <div class="issue-header">
+                    <h3>브라질</h3>
+                    <p>2025-11-13</p>
+                  </div>
+                  <ul class="issue-content">
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  </ul>
+                </div>
+                <!-- <div class="country-issue" id="argentina">
+                <h3>아르헨티나</h3>
+                <ul>
+                  <li>Issue Text 1</li>
+                  <li>Issue Text 2</li>
+                  <li>Issue Text 3</li>
+                </ul>
+              </div>
+              <div class="country-issue" id="ukraine">
+                <h3>우크라이나</h3>
+                <ul>
+                  <li>Issue Text 1</li>
+                  <li>Issue Text 2</li>
+                  <li>Issue Text 3</li>
+                </ul>
+              </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="panel-content">
+            <div class="panel-content-wrapper">
+              <div class="charts">
+                <h1>주요 작황 정보</h1>
+                <div class="chart-list">
+                  <!-- 실제 차트가 들어갈 공간 -->
+                  <!-- 배열로 정제한 데이터를 아래의 chart-card를 통해 map을 사용하여 표기 -->
+                  <div class="chart-card">
+                    <h3>옥수수 정보</h3>
+                    <div class="chart-content">
+                      <div class="bar-chart-container">
+                        <h4>생산량 (ton)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="bar-chart-container">
+                        <h4>연간수입량 (ton)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="bar-chart-container">
+                        <h4>재배면적 (㎡)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chart-card">
+                    <h3>콩 정보</h3>
+                    <div class="chart-content">
+                      <div class="bar-chart-container">
+                        <h4>생산량 (ton)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="bar-chart-container">
+                        <h4>연간수입량 (ton)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="bar-chart-container">
+                        <h4>재배면적 (㎡)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chart-card">
+                    <h3>밀 정보</h3>
+                    <div class="chart-content">
+
+                      <div class="bar-chart-container">
+                        <h4>생산량 (ton)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="bar-chart-container">
+                        <h4>연간수입량 (ton)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="bar-chart-container">
+                        <h4>재배면적 (㎡)</h4>
+                        <div>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/bar-chart.js"></script>
+
+</body>
+
+</html>

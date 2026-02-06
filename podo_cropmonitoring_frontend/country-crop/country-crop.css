@@ -1,0 +1,1434 @@
+@import "/styles.css";
+
+.country-page {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.content-wrapper {
+  padding: 0 60px 60px;
+  height: calc(100vh - 170px);
+}
+
+.content {
+  border-top: 2px solid var(--background-color);
+  padding-top: 20px;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 3fr 3fr 6fr;
+  gap: 16px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  height: 100%;
+  min-height: 0;
+}
+
+.map-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 400px;
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.world-view {
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.world-view:hover {
+  background-color: var(--background-color);
+}
+
+.crop-list {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.crop {
+  background-color: #FFFFFF;
+  color: var(--text-point-color);
+  border: none;
+  border-radius: 5px;
+  
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.crop a {
+  display: block;
+  padding: 11px 11.5px;
+}
+.crop:hover {
+  background-color: var(--background-color);
+}
+.crop.active {
+  background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+  color: white;
+}
+
+.country-map-overlay {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background-color);
+  padding: 15px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 300px;
+}
+
+.country-map-overlay img {
+  min-width: 0;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.country-states {
+  min-width: 120px;
+  height: 100%;
+  min-height: 0;
+  white-space: nowrap;
+  display: grid;
+  grid-template-columns: auto;
+  gap: 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  position: relative;
+  padding-right: 10px;
+}
+
+.state-item {
+  width: 110px;
+  padding: 4px 0 4px 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 120%;
+  cursor: pointer;
+}
+
+.state-item.active {
+  position: sticky;
+  padding-right: 10px;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+  color: white;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.state-item[aria-disabled="true"] {
+  background-color: var(--table-header-bg);
+  color: var(--text-muted-color);
+  cursor: not-allowed;
+}
+
+.cultivation-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 1;
+  min-height: 0;
+}
+
+.cultivation-calendar h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-body-color);
+}
+
+.cultivation-wrapper {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: var(--background-color);
+  flex: 1;
+  min-height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.cultivation-content {
+  height: 300px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+/* ========================================
+   현재 날짜 마커 스타일
+   - 아래 스타일을 수정하여 마커 디자인을 변경하세요
+   ======================================== */
+
+/* th에 동적으로 부여되는 스타일 */
+.cultivation-table th.has-date-marker {
+  position: relative;
+}
+
+/* th 내부 마커 div */
+.cultivation-date-marker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  z-index: 10;
+  pointer-events: none;
+  width: 100%;
+  border: 2px solid #FF0000;
+  box-sizing: content-box;
+  background: repeating-linear-gradient(135deg, transparent, transparent 8px,  #ffffff66 4px, #FFFFFF66 12px);
+}
+
+.cultivation-table {
+  flex: 1;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--table-border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cultivation-table th,
+.cultivation-table td {
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-body-color);
+  /* padding: 8px; */
+  text-align: center;
+  vertical-align: middle;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 마지막 열의 오른쪽 border 제거 */
+.cultivation-table th:last-child,
+.cultivation-table td:last-child {
+  border-right: none;
+}
+
+/* thead 하단 border 제거 (thead와 tbody 사이 흰선 제거) */
+.cultivation-table thead tr:last-child th {
+  border-bottom: none;
+}
+
+/* 마지막 행의 아래쪽 border 제거 */
+.cultivation-table tbody tr:last-child th {
+  border-bottom: none;
+}
+
+.cultivation-table th.fallow, .cultivation-table th.seeding {
+  color: var(--text-muted-color);
+}
+.cultivation-table th.growth, .cultivation-table th.maturity, .cultivation-table th.harvest {
+  color: white;
+}
+
+.cultivation-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  
+}
+
+.legend-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;  
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-body-color);
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.legend-color.fallow {
+  border: 1px solid var(--table-border-color);
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+}
+
+.statistics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 15px;
+  background-color: var(--background-color);
+  padding: 20px 20px 20px 15px;
+  border-radius: 10px;
+  min-height: 0;
+  flex-shrink: 0; /* metrics의 flex: 1에 의해 줄어들지 않도록 */
+}
+
+.statistic {
+  color: var(--text-body-color);
+  display:flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px 15px;
+  min-height: 0;
+  gap: 18px;
+}
+
+.statistic-header {
+  font-size: 14px;
+  font-weight: 600;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 확장 버튼 스타일 */
+.expand-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.expand-btn:hover {
+  opacity: 0.7;
+}
+
+.expand-btn:focus {
+  outline: 2px solid var(--button-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.statistic-content {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+.statistic-content h1 {
+  font-size: 26px;
+  font-weight: 700;
+}
+.statistic-content p {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.issue {
+  width: 100%;
+  height: 110px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0; /* metrics의 flex: 1에 의해 줄어들지 않도록 */
+}
+.issue-card {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 17.5px 20px;
+  box-sizing: border-box;
+  color: var(--text-body-color);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.issue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.issue-header div {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+
+.issue-header h1 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-body-color);
+}
+
+.issue-header p {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted-color);
+  line-height: 120%;
+}
+
+.issue-content {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 120%;
+}
+/* UNUSED: 사용되지 않음 - HTML에서 사용하지 않는 구조 */
+/*
+.carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+}
+.indicator {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--indicator-color);
+  cursor: pointer;
+}
+.indicator.active {
+  background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+} */
+
+
+.metrics {
+  padding: 20px 20px 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--background-color);
+  border-radius: 10px;
+  flex: 1;
+  min-height: 300px;
+  /* overflow: hidden; */
+}
+
+.metrics-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-body-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metrics-content {
+  flex: 1;
+  display: flex;
+  min-height: 0; /* 부모를 벗어나지 않도록 */
+}
+
+.metrics-chart {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.metrics-chart>.chart-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-body-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metrics-chart>.chart-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* canvas가 부모를 넘지 않도록 */
+.metrics-chart>.chart-content canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.data-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 20px;
+}
+
+.data-panel>.cultivation-calendar {
+  display: none;
+}
+.data-panel>.issue {
+  display: none;
+}
+.data-panel>.statistics {
+  display: none;
+}
+.data-panel>.metrics {
+  display: none;
+}
+
+.panel-header>.links {
+  display: none;
+}
+.panel-header>.country-map-overlay {
+  display: none;
+}
+
+.crop-link {
+  
+  background-color: white;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-point-color);
+}
+.crop-link a {
+  padding: 9px 17px;
+  display: block;
+}
+
+.crop-link.active {
+  background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+  color: white;
+}
+
+.panel-title h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-body-color);
+}
+
+.panel-title>.world-view {
+  display: none;
+}
+
+.panel-content {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  border-radius: 10px;
+  padding: 20px 5px 20px 15px;
+  min-height: 730px;
+}
+
+.panel-content-wrapper {
+  padding-right: 15px;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-body-color);
+}
+
+.chart-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  height: max-content;
+}
+
+.chart {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px 15px;
+}
+.chart-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-body-color);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chart-header p {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted-color);
+}
+
+.chart-content img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-top: 15px;
+}
+.chart-content canvas {
+ margin-top: 15px;
+}
+
+@media (max-width: 1851px) {
+  .content {
+    grid-template-columns: 3fr 6fr 3fr;
+  }
+  .country-map-overlay {
+    flex-direction: column;
+  }
+  .country-states {
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+  .state-item {
+    width: 100%;
+  }
+
+  .cultivation-table th,
+  .cultivation-table td {
+    font-size: 14px;
+  }
+  
+  .chart-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1600px) {
+  .cultivation-content {
+    height: 250px;
+  }
+}
+@media (max-width: 1400px) {
+  .cultivation-content {
+    height: 200px;
+  }
+
+  .cultivation-table th,
+  .cultivation-table td {
+    font-size: 12px;
+  }
+}
+@media (max-width: 1200px) {
+  .cultivation-table th,
+  .cultivation-table td {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 1033px) {
+
+  .country-page {
+    grid-template-columns: 100%;
+  }
+  .content-wrapper {
+    padding: 0 16px 60px;
+    height: calc(100vh - 144px);
+  }
+  .content {
+    overflow-y:auto;
+    /* grid-template-columns: auto; */
+    grid-template-columns: 100%;
+  }
+  .sidebar {
+    display: none;
+  }
+
+  .panel-header>.country-map-overlay {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    flex-direction: column;
+    gap: 25px;
+    min-height: 0;
+  }
+
+  .country-states {
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 4px;
+  }
+
+  .state-item {
+    flex-shrink: 0;
+    width: auto;
+    padding: 9px 17px;
+    border-radius: 16px;
+    line-height: normal;
+  }
+  .state-item.active {
+    position: sticky;
+    left: 0;
+    gap: 10px;
+  }
+
+  .summary{
+    display: none;
+  }
+
+  .data-panel {
+    gap: 10px;
+  }
+
+  .data-panel>.cultivation-calendar {
+    display: flex;
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 20px;
+    min-height: fit-content;
+  }
+
+  .data-panel>.cultivation-calendar .cultivation-wrapper {
+    padding: 0;
+    background-color: transparent;
+  }
+  .data-panel>.cultivation-calendar>.cultivation-wrapper .cultivation-content {
+    border-radius: 20px;
+  }
+  .data-panel>.issue {
+    display: flex;
+    box-shadow: none;
+    background-color: var(--background-color);
+    border-radius: 20px;
+    height: fit-content;
+    min-height: fit-content;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .cultivation-table th,
+  .cultivation-table td {
+    font-size: 16px;
+  }
+
+  .data-panel>.statistics {
+    display: grid;
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 20px;
+    height: auto;
+    min-height: fit-content;
+  }
+
+  .data-panel>.metrics {
+    display: flex;
+    min-height: fit-content;
+    padding: 20px;
+    border-radius: 20px;
+    
+  }
+  
+  .metrics-content {
+    height: fit-content;
+  }
+
+  .metrics-chart {
+    max-height: 500px;
+  }
+
+  .metrics-chart>.chart-content {
+    margin-top: 0;
+    min-height: 300px;
+    height: 300px;
+  }
+
+
+  .panel-content-wrapper {
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+
+  .panel-header {
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+  }
+  .panel-header>.links {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .crop-link.active {
+    color: white;
+    background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+  }
+
+  .panel-title {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title>.world-view {
+    display: block;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .panel-content {
+    background-color: transparent;
+    overflow-y: visible;
+    padding: 0;
+  }
+
+  .chart-card {
+    padding: 20px;
+    border-radius: 20px;
+    background-color: var(--background-color);
+  }
+
+  /* UNUSED: 사용되지 않음 - 오타로 추정 (.card-header가 정확함) */
+  /* .cart-header {
+    font-size: 16px;
+  } */
+
+  .chart-group {
+    grid-template-columns: auto;
+  }
+
+  .chart {
+    height: auto;
+    border-radius: 20px;
+  }
+
+  .chart-header {
+    font-weight: 500;
+  }
+
+  .chart-content {
+    border-radius: 20px;
+    margin-top: 15px;
+  }
+
+}
+
+@media (max-width: 624px) {
+  .cultivation-table th,
+  .cultivation-table td {
+    font-size: 12px;
+  }
+
+  .statistic-content p span:last-child {
+    display: none;
+  }
+}
+
+/* 모달 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-bg-color);
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  background-color: var(--background-color);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  z-index: 1001;
+  padding: 20px 5px 20px 15px;
+  box-sizing: border-box;
+}
+
+.modal-content-ndvi {
+  width: 1600px;
+  height: 700px;
+}
+
+.modal-content-data {
+  height: 520px;
+  width: 900px;
+}
+
+.modal.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding-right: 15px;
+}
+#modal-title {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+#modal-title h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-body-color);
+  margin: 0;
+}
+
+.modal-close {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.modal-close.mobile {
+  display: none;
+}
+
+.modal-close:hover {
+  background-color: var(--background-color);
+}
+
+.modal-close:focus {
+  outline: 2px solid var(--button-color);
+  outline-offset: 2px;
+}
+
+.modal-subtitle {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-muted-color);
+}
+
+.modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.modal-body>.issue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 15px;
+}
+.modal-body>.issue-list>.issue-card {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  padding: 17.5px 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
+
+  background-color: white;
+  color: var(--text-body-color);
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.25);
+}
+.modal-body>.issue-list>.issue-card:last-child {
+  margin-bottom: 10px;
+}
+
+.modal-body>.chart-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--text-body-color);
+  font-size: 14px;
+  font-weight: 600;
+  height: 100%;
+}
+
+.single-content-wrapper {
+  position: relative;
+  width: calc(100% - 15px);
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.single-content-wrapper canvas {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  width: calc(100% - 40px) !important;
+  height: calc(100% - 40px) !important;
+}
+
+.multi-content-wrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  height: 100%;
+}
+
+.area-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 20px 15px;
+  background-color: white;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.production-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 20px 15px;
+  background-color: white;
+  border-radius: 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+.production-content h1, .area-content h1 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-body-color);
+}
+
+.production-images, .area-images {
+  flex: 1;
+}
+
+.production-images {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.production-images-slider {
+  display: flex;
+  height: calc(100% - 30px); /* 인디케이터 공간 */
+  transition: transform 0.3s ease;
+}
+
+.production-images-slider img {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.production-carousel {
+  overflow: hidden;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.production-carousel>.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--indicator-color);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.production-carousel>.indicator.active {
+  background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+  width: 40px;
+  border-radius: 6px;
+}
+
+.area-images {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.area-images img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.total-chart {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px 15px;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.total-chart-slider-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.total-chart-slider {
+  display: flex;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.total-chart-slider .total-chart-item {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.total-chart-slider .total-chart-item .total-chart-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.total-chart-slider .total-chart-item .total-chart-content canvas,
+.total-chart-slider .total-chart-item .total-chart-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.total-chart-carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.total-chart-carousel > .indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--indicator-color);
+  cursor: pointer;
+}
+
+.total-chart-carousel > .indicator.active {
+  background: linear-gradient(90deg, var(--button-gradient-start), var(--button-color));
+  width: 40px;
+  border-radius: 6px;
+}
+
+.state-chart-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
+  grid-auto-rows: min-content;
+  gap: 15px;
+  overflow-y: auto;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+.state-chart-list>.state-chart-item {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 300px;
+  box-sizing: border-box;
+}
+.state-chart-list>.state-chart-item>.state-chart-item-content {
+  height: 300px;
+  background-color: white;
+  border-radius: 20px;
+}
+
+/* body 스크롤 방지 */
+body.modal-open {
+  overflow: hidden;
+}
+
+
+@media (max-width: 1851px) {
+  .modal-content-ndvi {
+    width: 900px;
+    height: 520px;
+  }
+  .modal-body>.chart-list {
+    grid-template-columns: 2fr 1fr;
+    /* grid-template-rows: auto auto; */
+  }
+  .state-chart-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 1033px) {
+  .modal {
+    height: calc(100vh - 48px);
+    bottom: 0;
+    top: 48px;
+  }
+  .modal-overlay {
+    display: none;
+  }
+  .modal-content {
+    background-color: white;
+    padding-top: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    gap: 10px;
+    padding: 0 0 16px 16px;
+  }
+  .modal-subtitle {
+    display: none;
+  }
+
+  .modal-content-ndvi, .modal-content-data {
+    width: 100%;
+    height: calc(100vh - 48px);
+  }
+
+
+  .modal-header {
+    background-color: var(--background-color);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 10px;
+    margin-right: 16px;
+    justify-content: flex-start;
+  }
+  #modal-title {
+    justify-content: flex-start;
+  }
+  .modal-close {
+    display: none;
+  }
+  .modal-close.mobile {
+    display: inline-flex; 
+    margin-right: 25px;
+  }
+  .modal-body {
+    overflow-y: visible;
+    padding-bottom: 72px;
+  }
+
+  .modal-body>.issue-list {
+    padding-right: 16px;
+  }
+
+  .modal-body>.issue-list>.issue-card {
+    border-radius: 20px;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-body-color);
+    box-shadow: none;
+  }
+
+  .modal-body>.issue-list>.issue-card>.issue-header div {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .modal-body>.chart-list {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 15px;
+    height: auto;
+    padding-right: 16px;
+  }
+
+
+  .multi-content-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .single-content-wrapper {
+    min-height: 300px;
+  }
+
+  .area-images {
+    min-height: 300px;
+  }
+
+  .production-images-slider {
+    min-height: 300px;
+  }
+
+  .total-chart {
+    min-height: fit-content;
+    height: fit-content;
+    background-color: var(--background-color);
+    border-radius: 20px;
+    padding: 20px;
+    gap: 15px;
+  }
+  
+  .total-chart>.total-chart-content {
+    height: 300px;
+    background-color: white;
+    border-radius: 20px;
+  }
+
+  .state-chart-list {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    overflow-y: visible;
+    padding-right: 0;
+    max-height: none;
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .state-chart-list>.state-chart-item{
+    height: auto;
+    background-color: transparent;
+    padding: 0;
+    gap: 15px;
+  }
+
+  .state-chart-list>.state-chart-item>.state-chart-item-content {
+    height: 300px;
+    background-color: white;
+    border-radius: 20px;
+  }
+
+
+}

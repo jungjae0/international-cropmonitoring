@@ -1,0 +1,44 @@
+     # .dockerignore
+
+# 1. 버전 관리 폴더 (용량이 매우 클 수 있음)
+.git
+.gitignore
+
+# 2. 로컬 가상환경 폴더 (이미지 안에는 새로 만드니까 필요 없음)
+.venv/
+venv/
+env/
+.env_local/
+anaconda3/
+miniconda3/
+# 혹시 로컬에 conda 환경을 프로젝트 폴더 안에 만드셨다면 그 폴더명도 추가하세요!
+
+# 3. 데이터 및 미디어 파일 (이미지에 박제하지 않고 volume으로 연결해야 함)
+# 아래 폴더명은 실제 데이터가 들어있는 폴더명으로 수정하세요.
+**/data/
+**/media/
+static/
+*.csv
+*.tif
+*.tiff
+*.jpg
+*.png
+*.pth
+*.pt
+# 모델 가중치 파일도 용량이 크다면 제외하고 오프라인 서버에서 따로 넣어주는 게 좋습니다.
+
+# 4. 파이썬 캐시 및 빌드 잔여물
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+develop-eggs/
+eggs/
+.eggs/
+
+# 5. IDE 설정 파일
+../.idea/
+.vscode/

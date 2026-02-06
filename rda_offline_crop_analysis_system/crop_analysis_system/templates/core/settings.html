@@ -1,0 +1,99 @@
+{% extends "core/base.html" %}
+{% block title %}Root Settings{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Root Settings</h1>
+<p class="text-muted mb-4">Select an active root for input, output, and logs, or add a new absolute path.</p>
+
+<form id="settings-form">
+    <div class="row">
+        <!-- Input Root Panel -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Input Root
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="input-root-select" class="form-label">Existing Paths</label>
+                        <div class="input-group">
+                            <select id="input-root-select" class="form-select"></select>
+                            <button id="input-root-activate" class="btn btn-outline-secondary" type="submit" data-action="activate" data-type="input">Set Active</button>
+                        </div>
+                        <div class="form-text" id="input-root-active">Loading...</div>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="input-root-path" class="form-label">New Path</label>
+                         <div class="input-group">
+                            <input id="input-root-path" class="form-control" placeholder="e.g., /mnt/data/input">
+                            <button id="input-root-add" class="btn btn-primary" type="submit" data-action="add" data-type="input">Add & Activate</button>
+                        </div>
+                        <div class="form-text path-preview" id="input-root-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Root Panel -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Output Root
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="output-root-select" class="form-label">Existing Paths</label>
+                        <div class="input-group">
+                            <select id="output-root-select" class="form-select"></select>
+                            <button id="output-root-activate" class="btn btn-outline-secondary" type="submit" data-action="activate" data-type="output">Set Active</button>
+                        </div>
+                        <div class="form-text" id="output-root-active">Loading...</div>
+                    </div>
+                    <hr>
+                     <div class="mb-3">
+                        <label for="output-root-path" class="form-label">New Path</label>
+                         <div class="input-group">
+                            <input id="output-root-path" class="form-control" placeholder="e.g., /mnt/data/output">
+                            <button id="output-root-add" class="btn btn-primary" type="submit" data-action="add" data-type="output">Add & Activate</button>
+                        </div>
+                        <div class="form-text path-preview" id="output-root-preview" data-status="off"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Logs Root Panel -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Logs Root
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="logs-root-select" class="form-label">Existing Paths</label>
+                        <div class="input-group">
+                            <select id="logs-root-select" class="form-select"></select>
+                            <button id="logs-root-activate" class="btn btn-outline-secondary" type="submit" data-action="activate" data-type="logs">Set Active</button>
+                        </div>
+                        <div class="form-text" id="logs-root-active">Loading...</div>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="logs-root-path" class="form-label">New Path</label>
+                         <div class="input-group">
+                            <input id="logs-root-path" class="form-control" placeholder="e.g., /mnt/data/logs">
+                            <button id="logs-root-add" class="btn btn-primary" type="submit" data-action="add" data-type="logs">Add & Activate</button>
+                        </div>
+                        <div class="form-text path-preview" id="logs-root-preview" data-status="off"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="root-settings-message" class="alert mt-4" hidden></div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "core/base.html" %}
+{% block title %}Job #{{ job.id }} - Detail{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Job #{{ job.id }}</li>
+  </ol>
+</nav>
+
+<div id="error-box" class="alert alert-danger" hidden></div>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Job #{{ job.id }}</h5>
+            <span id="job-status-badge" class="badge rounded-pill bg-secondary" data-job-id="{{ job.id }}">{{ job.status }}</span>
+        </div>
+      <div class="card-body">
+        <p id="job-status-text" class="card-text text-muted">Loading status...</p>
+        <div class="progress" role="progressbar" aria-label="Overall job progress" aria-valuenow="{{ job.progress_percent }}" aria-valuemin="0" aria-valuemax="100" style="height: 25px;">
+            <div id="job-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ job.progress_percent }}%">{{ job.progress_percent }}%</div>
+        </div>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Output Name:</strong> {{ job.output_dir_name }}</li>
+        <li class="list-group-item"><strong>Preset:</strong> {{ job.pipeline_config.name|default:"N/A" }}</li>
+        <li class="list-group-item"><strong>Country:</strong> {{ job.input_path.country }}</li>
+        <li class="list-group-item"><strong>Year/Suffix:</strong> {{ job.input_path.year_suffix }}</li>
+        <li class="list-group-item"><strong>States:</strong> {{ job.selected_states|join:", " }}</li>
+        <li class="list-group-item"><strong>Crops:</strong> {{ job.target_crops }}</li>
+        <li class="list-group-item"><strong>Created:</strong> {{ job.created_at|date:"Y-m-d H:i:s" }}</li>
+        <li class="list-group-item"><strong>Updated:</strong> {{ job.updated_at|date:"Y-m-d H:i:s" }}</li>
+      </ul>
+      <div class="card-body text-center">
+        <div class="btn-group" role="group" aria-label="Job actions">
+            {% if job.status == 'RUNNING' or job.status == 'PENDING' %}
+            <button id="cancel-job" class="btn btn-danger" type="button" data-job-id="{{ job.id }}">
+                <i class="bi bi-stop-circle"></i> Cancel
+            </button>
+            {% endif %}
+            {% if job.status == 'FAILED' or job.status == 'CANCELLED' %}
+            <button id="retry-job" class="btn btn-primary" type="button" data-job-id="{{ job.id }}">
+                <i class="bi bi-arrow-clockwise"></i> Retry
+            </button>
+            {% endif %}
+        </div>
+      </div>
+       {% if job.status == 'FAILED' or job.status == 'CANCELLED' %}
+       <div class="card-footer text-muted">
+            <div class="form-text">Retry Options (skip if exists):</div>
+             <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="retry-skip-inference" {% if job.skip_inference %}checked{% endif %}>
+                <label class="form-check-label" for="retry-skip-inference">Inference</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="retry-skip-merge" {% if job.skip_merge %}checked{% endif %}>
+                <label class="form-check-label" for="retry-skip-merge">Merge</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="retry-skip-area" {% if job.skip_area %}checked{% endif %}>
+                <label class="form-check-label" for="retry-skip-area">Area</label>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+     <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress-tab-pane" type="button" role="tab" aria-controls="progress-tab-pane" aria-selected="true">
+                <i class="bi bi-terminal"></i> Progress Log
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="outputs-tab" data-bs-toggle="tab" data-bs-target="#outputs-tab-pane" type="button" role="tab" aria-controls="outputs-tab-pane" aria-selected="false">
+                <i class="bi bi-files"></i> Outputs
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="celery-tab" data-bs-toggle="tab" data-bs-target="#celery-tab-pane" type="button" role="tab" aria-controls="celery-tab-pane" aria-selected="false">
+                <i class="bi bi-activity"></i> Celery Status
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="maps-tab" data-bs-toggle="tab" data-bs-target="#maps-tab-pane" type="button" role="tab" aria-controls="maps-tab-pane" aria-selected="false">
+                <i class="bi bi-map"></i> Maps
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="progress-tab-pane" role="tabpanel" aria-labelledby="progress-tab" tabindex="0">
+            <div class="card rounded-0 rounded-bottom">
+                <div id="progress-log" class="card-body" style="height: 60vh; overflow-y: auto; font-family: monospace; font-size: 0.8rem; background-color: #212529; color: #ced4da;">
+                    <div class="text-muted">Waiting for progress updates...</div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="outputs-tab-pane" role="tabpanel" aria-labelledby="outputs-tab" tabindex="0">
+            <div class="card rounded-0 rounded-bottom">
+                <div class="card-body">
+                    <div id="output-steps">
+                        <div class="text-muted">Loading outputs...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="tab-pane fade" id="celery-tab-pane" role="tabpanel" aria-labelledby="celery-tab" tabindex="0">
+            <div class="card rounded-0 rounded-bottom">
+                <div class="card-body">
+                    <pre id="celery-status-box" style="height: 60vh; overflow-y: auto;"><code>Loading Celery status...</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="maps-tab-pane" role="tabpanel" aria-labelledby="maps-tab" tabindex="0">
+            <div class="card rounded-0 rounded-bottom">
+                <div class="card-body">
+                    <div id="job-detail-map" style="height: 60vh;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

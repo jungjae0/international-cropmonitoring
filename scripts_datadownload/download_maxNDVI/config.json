@@ -1,0 +1,44 @@
+{
+  "project_id": "PROJECT ID",
+  "task_log_file": "20260122.csv",
+  "years": [2025],
+  "locations": [
+    {
+      "country_name": "United States of America",
+      "country_code": "USA",
+      "states": [
+        "Iowa", "Illinois", "Minnesota", "Nebraska", "Indiana",
+        "Kansas", "South Dakota", "Ohio", "Missouri", "North Dakota",
+        "Wisconsin", "Arkansas"
+    ]
+    },
+    {
+      "country_name": "Brazil",
+      "country_code": "BRA",
+      "states": [
+        "Mato Grosso", "Parana", "Rio Grande do Sul", "Goias",
+        "Mato Grosso do Sul", "Bahia", "Sao Paulo", "Minas Gerais"
+    ]
+    },
+    {
+      "country_name": "Argentina",
+      "country_code": "ARG",
+      "states": [
+        "Buenos Aires", "Cordoba", "Santa Fe", "Santiago del Estero",
+        "Entre Rios", "La Pampa"
+    ]
+    }
+
+  ],
+  "periods": {
+    "1031": {"start_fmt": "{year}-05-01", "end_fmt": "{year}-10-30"}
+  },
+  "export_params": {
+    "scale": 10,
+    "cloud_cover_max": 50,
+    "max_pixels": 1e13
+  },
+  "local_settings": {
+    "target_dir": "D:/CropMonitoring/OrganizedData"
+  }
+}

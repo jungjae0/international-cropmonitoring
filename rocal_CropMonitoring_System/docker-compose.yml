@@ -1,0 +1,56 @@
+services:
+  web:
+    build: .
+    container_name: django-web
+    command: gunicorn CropMonitoring_System.wsgi:application --bind 0.0.0.0:8080
+    volumes:
+      - ./staticfiles:/usr/src/app/staticfiles
+      - ./datas:/usr/src/app/datas:ro
+      - media_volume:/usr/src/app/_media
+      - ./db.sqlite3:/usr/src/app/db.sqlite3
+      - ~/.config/earthengine:/root/.config/earthengine:ro
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - MEDIA_ROOT=/usr/src/app/datas
+    depends_on:
+      - redis
+    ports:
+      - "8080:8080"
+
+  celery_worker:
+    build: .
+    container_name: celery-worker
+    command: celery -A CropMonitoring_System worker --loglevel=info --pool=solo
+    volumes:
+      - .:/usr/src/app
+      - ./datas:/usr/src/app/datas:ro
+      - media_volume:/usr/src/app/_media
+      - ./db.sqlite3:/usr/src/app/db.sqlite3
+      - ~/.config/earthengine:/root/.config/earthengine:ro
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - MEDIA_ROOT=/usr/src/app/datas
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./staticfiles:/usr/src/app/staticfiles
+      - ./datas:/usr/src/app/datas:ro
+      - media_volume:/usr/src/app/_media
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
+  media_volume:

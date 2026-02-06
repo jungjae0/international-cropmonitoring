@@ -1,0 +1,62 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}작황 모니터링{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 지도 및 Plotly -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
+
+    <!-- 커스텀 스타일 -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+<header class="bg-white shadow-md px-6 py-4 relative flex items-center justify-between">
+
+    <!-- ✅ 가운데 정렬 내비게이션 -->
+    <nav class="absolute left-1/2 -translate-x-1/2 flex gap-8 text-gray-700 font-semibold text-base">
+        <a href="/area" class="hover:text-blue-600">🌾 재배현황</a>
+{#        <a href="/climate/" class="hover:text-blue-600">🌦️ 기상관측</a>#}
+    </nav>
+
+    <!-- ✅ 오른쪽 사용자 정보 -->
+    <div class="flex items-center gap-4 text-sm ml-auto">
+        {% if user.is_authenticated %}
+            <span class="text-gray-700">👤 {{ user.username }}</span>
+            <form method="post" action="{% url 'logout' %}" class="m-0">
+                {% csrf_token %}
+                <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
+                    로그아웃
+                </button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="text-blue-600 hover:underline">로그인</a>
+            <a href="{% url 'signup' %}" class="text-blue-600 hover:underline ml-2">회원가입</a>
+        {% endif %}
+    </div>
+</header>
+
+
+<!-- ✅ 본문 콘텐츠 -->
+<main class="w-full pt-6 px-6">
+    {% block content %}{% endblock %}
+</main>
+
+
+<!-- ✅ 공통 스크립트 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- ✅ 안전한 JSON 파싱 유틸리티 (NaN 처리) -->
+<script src="/static/js/utils.js"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

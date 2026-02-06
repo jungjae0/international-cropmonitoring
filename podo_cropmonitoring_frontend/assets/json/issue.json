@@ -1,0 +1,109 @@
+{
+  "issueList": [
+    {
+      "id": 1,
+      "title": "Pest Infestation in Midwest",
+      "description": "A significant increase in pest infestation has been reported in the Midwest region, affecting corn crops.",
+      "reportedDate": "2024-06-15",
+      "status": "Under Investigation"
+    },
+    {
+      "id": 2,
+      "title": "Drought Conditions in California",
+      "description": "Severe drought conditions are impacting soybean yields in California, leading to water restrictions for farmers.",
+      "reportedDate": "2024-06-10",
+      "status": "Ongoing"
+    },
+    {
+      "id": 3,
+      "title": "Flooding in the Mississippi Delta",
+      "description": "Recent heavy rains have caused flooding in the Mississippi Delta, damaging wheat fields and delaying harvest.",
+      "reportedDate": "2024-06-12",
+      "status": "Resolved"
+    },
+    {
+      "id": 4,
+      "title": "Heatwave in Texas",
+      "description": "Prolonged high temperatures in Texas are stressing corn crops, potentially reducing yield forecasts.",
+      "reportedDate": "2024-06-20",
+      "status": "Monitoring"
+    },
+    {
+      "id": 5,
+      "title": "Early Frost Warning in North Dakota",
+      "description": "Meteorologists predict an unseasonably early frost in North Dakota, posing a risk to late-planted wheat.",
+      "reportedDate": "2024-09-05",
+      "status": "Alert"
+    },
+    {
+      "id": 6,
+      "title": "Locust Swarm in Kansas",
+      "description": "A localized locust swarm has been spotted in Kansas, threatening soybean fields in the western counties.",
+      "reportedDate": "2024-07-12",
+      "status": "Active"
+    },
+    {
+      "id": 7,
+      "title": "Fertilizer Supply Chain Issues",
+      "description": "Global supply chain disruptions are causing delays in fertilizer delivery, affecting planting schedules across the Midwest.",
+      "reportedDate": "2024-04-10",
+      "status": "Ongoing"
+    },
+    {
+      "id": 8,
+      "title": "Labor Shortage During Harvest",
+      "description": "Farmers are facing a critical labor shortage as harvest season approaches, potentially leading to crop spoilage.",
+      "reportedDate": "2024-08-25",
+      "status": "Critical"
+    },
+    {
+      "id": 9,
+      "title": "New Fungal Disease in Ohio",
+      "description": "A previously unseen fungal disease has been identified in Ohio corn fields, prompting emergency research.",
+      "reportedDate": "2024-07-30",
+      "status": "Under Investigation"
+    },
+    {
+      "id": 10,
+      "title": "Hailstorm Damage in Nebraska",
+      "description": "Severe hailstorms have flattened large areas of soybean crops in Nebraska, with insurance claims rising.",
+      "reportedDate": "2024-06-28",
+      "status": "Assessing Damage"
+    },
+    {
+      "id": 11,
+      "title": "Record Yields Expected in Iowa",
+      "description": "Favorable weather conditions in Iowa are leading to projections of record-breaking corn yields this season.",
+      "reportedDate": "2024-09-15",
+      "status": "Positive"
+    },
+    {
+      "id": 12,
+      "title": "Soil Erosion Concerns in Illinois",
+      "description": "Heavy spring rains have exacerbated soil erosion issues in Illinois, leading to calls for better conservation practices.",
+      "reportedDate": "2024-05-05",
+      "status": "Long-term Issue"
+    },
+    {
+      "id": 13,
+      "title": "Water Quality Issues in Florida",
+      "description": "Runoff from agricultural fields is affecting local water quality in Florida, leading to regulatory scrutiny.",
+      "reportedDate": "2024-07-18",
+      "status": "Under Review"
+    },
+    {
+      "id": 14,
+      "title": "Market Price Volatility",
+      "description": "Uncertainty in global markets is causing significant volatility in wheat and corn prices, affecting farmer income stability.",
+      "reportedDate": "2024-10-01",
+      "status": "Economic"
+    },
+    {
+      "id": 15,
+      "title": "Equipment Maintenance Delays",
+      "description": "Shortage of spare parts for agricultural machinery is causing delays in essential field operations.",
+      "reportedDate": "2024-05-20",
+      "status": "Operational"
+    }
+  ]
+}

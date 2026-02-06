@@ -1,0 +1,201 @@
+{% extends "core/base.html" %}
+{% block title %}Job Dashboard{% endblock %}
+
+{% block content %}
+<div class="accordion mb-4" id="job-setup-accordion">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <i class="bi bi-plus-circle me-2"></i> Create New Job
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#job-setup-accordion">
+      <div class="accordion-body">
+        {% if not input_root_active or not output_root_active %}
+            <div class="alert alert-warning">
+              Input/Output roots are not configured. Please set them in <a href="/core/settings/" class="alert-link">Settings</a> before starting a job.
+            </div>
+        {% endif %}
+
+        <form id="job-form" data-input-root="{{ input_root }}" data-output-root="{{ output_root }}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="country" class="form-label">Country</label>
+                    <select id="country" name="country" class="form-select"></select>
+                </div>
+                <div class="col-md-4">
+                    <label for="year-suffix" class="form-label">Year/Suffix</label>
+                    <select id="year-suffix" name="year_suffix" class="form-select"></select>
+                </div>
+                <div class="col-md-4">
+                    <label for="pipeline-config" class="form-label">Model Preset</label>
+                    <select id="pipeline-config" name="pipeline_config_id" class="form-select">
+                        <option value="">-- Manual --</option>
+                        {% for cfg in configs %}
+                        <option value="{{ cfg.id }}" data-country="{{ cfg.country.code|default_if_none:'' }}" data-crops="{% for link in cfg.pipelineconfigcrop_set.all %}{{ link.crop.display_name|default:link.crop.name }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        {{ cfg.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label mb-0">States</label>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="select-all-states">Select All</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all-states">Deselect All</button>
+                        </div>
+                  </div>
+                  <div id="states" class="p-2 bg-light border rounded mt-1" style="min-height: 100px; max-height: 200px; overflow-y: auto;">
+                    <small class="text-muted">Select a country and year first.</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="target-crops" class="form-label">Target Crops</label>
+                    <input id="target-crops" name="target_crops" class="form-control" placeholder="e.g., corn, soy" />
+                </div>
+                <div class="col-md-6">
+                    <label for="output-name" class="form-label">Output Directory Name</label>
+                    <input id="output-name" name="output_name" class="form-control" placeholder="e.g., Experiment_Run_01" {% if not output_root_active %}disabled{% endif %} />
+                </div>
+                <div class="col-md-6">
+                    <label for="schedule-at" class="form-label">Schedule (optional)</label>
+                    <input id="schedule-at" name="schedule_at" type="datetime-local" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="gpu-count" class="form-label">GPU Count</label>
+                    <div class="input-group">
+                        <input id="gpu-count" name="gpu_count" type="number" min="-1" step="1" class="form-control" placeholder="-1 for auto, 0 for CPU" value="-1">
+                        <span class="input-group-text" id="gpu-available">/ 0</span>
+                    </div>
+                    <div class="form-text">-1: auto, 0: CPU, &gt;0: specific count. Available: <span id="gpu-available-count">0</span></div>
+                </div>
+            </div>
+
+            <div class="my-3">
+                <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" href="#path-preview-collapse" role="button" aria-expanded="false" aria-controls="path-preview-collapse">
+                    <i class="bi bi-folder2-open"></i> Toggle Path Preview
+                </a>
+            </div>
+            <div class="collapse" id="path-preview-collapse">
+                <div class="list-group" id="output-path-preview-list">
+                    <!-- Preview paths will be injected here by JS -->
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1 align-items-center">
+                 <div class="col-auto">
+                    <span class="form-text text-body-secondary">Skip if exists:</span>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="skip-inference" name="skip_inference">
+                        <label class="form-check-label" for="skip-inference">Inference</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="skip-merge" name="skip_merge">
+                        <label class="form-check-label" for="skip-merge">Merge</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="skip-area" name="skip_area">
+                        <label class="form-check-label" for="skip-area">Area</label>
+                    </div>
+                </div>
+                <div class="col"></div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary w-100" {% if not input_root_active or not output_root_active %}disabled{% endif %}>
+                        <i class="bi bi-play-fill"></i> Start Job
+                    </button>
+                </div>
+            </div>
+        </form>
+         <div id="job-result" class="alert mt-3" hidden></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<h2 class="mb-3">Job Status</h2>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Output Name</th>
+                    <th>Country</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th style="width: 20%;">Progress</th>
+                </tr>
+            </thead>
+            <tbody id="job-list-body">
+            {% for job in recent_jobs %}
+                <tr class="job-row" data-href="/core/jobs/{{ job.id }}/" data-job-id="{{ job.id }}">
+                    <th scope="row">#{{ job.id }}</th>
+                    <td>{{ job.output_dir_name|default:"(root)" }}</td>
+                    <td>{{ job.input_path.country }}</td>
+                    <td>{{ job.input_path.year_suffix }}</td>
+                    <td class="job-status">
+                        <span class="badge rounded-pill bg-secondary">{{ job.status }}</span>
+                    </td>
+                    <td>{{ job.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="job-progress">
+                       <div class="progress" role="progressbar" aria-label="Job progress" aria-valuenow="{{ job.progress_percent }}" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ job.progress_percent }}%">{{ job.progress_percent }}%</div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+         {% if page_obj and page_obj.paginator.num_pages > 1 %}
+        <nav aria-label="Job pagination">
+            <ul class="pagination pagination-sm justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+      {% endif %}
+    </div>
+</div>
+{% endblock %}

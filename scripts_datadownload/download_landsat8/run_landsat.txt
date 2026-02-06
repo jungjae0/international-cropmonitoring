@@ -1,0 +1,14 @@
+@echo off
+
+cd /d "C:\code\RDA_data_download\download_landsat8"
+
+
+for /f %%i in ('powershell -command "Get-Date -Format yyyyMM"') do set YEARMONTH=%%i
+
+
+set LOGFILE=log_%YEARMONTH%.txt
+
+".\venv\Scripts\python.exe" download_landsat8.py >> %LOGFILE% 2>&1
+
+exit
+
