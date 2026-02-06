@@ -1,0 +1,38 @@
+{# templates/base.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Map Viewer{% endblock %}</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<header class="navbar">
+    <nav>
+        <ul class="nav-menu">
+            <li><a href="#">생육현황</a></li>
+            <li><a href="/climate/">기상관측</a></li>
+            <li><a href="#">기상예측</a></li>
+            <li><a href="#">생산성</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="content">
+    {% block content %}{% endblock %}
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/static/js/area_chart_logic.js"></script>
+<script src="/static/js/map_logic.js"></script>
+<script src="/static/js/boundary_logic.js"></script>
+<script src="/static/js/climate_plot_logic.js"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

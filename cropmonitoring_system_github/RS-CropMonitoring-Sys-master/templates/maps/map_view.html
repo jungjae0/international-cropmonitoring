@@ -1,0 +1,54 @@
+{# templates/maps/map_view.html #}
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}타일맵 선택{% endblock %}
+
+{% block content %}
+    <section class="map-controls">
+        <div class="form-row">
+            <label for="crop">Crop:</label>
+            <select id="crop">
+                <option value="">Select Crop</option>
+                {% for crop in crops %}
+                    <option value="{{ crop }}">{{ crop }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="year">Year:</label>
+            <select id="year">
+                <option value="">Select Year</option>
+            </select>
+
+            <label for="country">Country:</label>
+            <select id="country">
+                <option value="">Select Country</option>
+            </select>
+
+            <label for="state">State:</label>
+            <select id="state">
+                <option value="전체">전체</option>
+            </select>
+        </div>
+    </section>
+
+    <div class="map-and-summary">
+        <div id="map"></div>
+
+        <section class="area-summary">
+            <h3>재배 면적</h3>
+            <div>
+                단위:
+                <label><input type="radio" name="unit" value="acres" checked> Acres</label>
+                <label><input type="radio" name="unit" value="hectares"> Hectares</label>
+            </div>
+            <div id="area-total"></div>
+            <div id="area-ranking-controls" style="display: none;">
+                <button id="sort-asc">오름차순</button>
+                <button id="sort-desc">내림차순</button>
+            </div>
+            <ul id="area-ranking-list"></ul>
+            <div id="area-chart" style="width: 100%; height: 300px;"></div>
+        </section>
+    </div>
+{% endblock %}
