@@ -1,0 +1,161 @@
+<form method="get" action="{% url 'file_list' %}">
+    <label for="data_source">Data Source:</label>
+    <select id="data_source" name="data_source">
+        <option value="">--Select Data Source--</option>
+        {% for source in data_sources %}
+            <option value="{{ source }}" {% if source == selected_data_source %}selected{% endif %}>
+                {{ source }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="nation">Nation:</label>
+    <select id="nation" name="nation">
+        <option value="">--Select Nation--</option>
+        {% for nation in nations %}
+            <option value="{{ nation }}" {% if nation == selected_nation %}selected{% endif %}>
+                {{ nation }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="year">Year:</label>
+    <select id="year" name="year" multiple>
+        {% for year in years %}
+            <option value="{{ year }}" {% if year|stringformat:"d" in selected_years %}selected{% endif %}>
+                {{ year }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="button" onclick="toggleSelectAll('year')">Select All Years</button>
+
+    <label for="month">Month:</label>
+    <select id="month" name="month" multiple>
+        {% for month in months %}
+            <option value="{{ month }}" {% if month|stringformat:"d" in selected_months %}selected{% endif %}>
+                {{ month }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="button" onclick="toggleSelectAll('month')">Select All Months</button>
+
+    <button type="submit">Filter</button>
+</form>
+
+{% if file_records %}
+    <table>
+        <thead>
+            <tr>
+                <th>Data Source</th>
+                <th>Nation</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Path</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in file_records %}
+            <tr>
+                <td>{{ record.data_source }}</td>
+                <td>{{ record.nation }}</td>
+                <td>{{ record.year }}</td>
+                <td>{{ record.month }}</td>
+                <td>{{ record.path }}</td>
+                <td><a href="{% url 'download_file' record.id %}">Download</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="post" action="{% url 'download_zip' %}">
+        {% csrf_token %}
+        <input type="hidden" name="data_source" value="{{ selected_data_source }}">
+        <input type="hidden" name="nation" value="{{ selected_nation }}">
+        <input type="hidden" name="years" value="{{ selected_years|join:',' }}">
+        <input type="hidden" name="months" value="{{ selected_months|join:',' }}">
+        <button type="submit">Download as ZIP</button>
+    </form>
+{% endif %}
+
+<script>
+    function toggleSelectAll(selectId) {
+        const select = document.getElementById(selectId);
+        const allSelected = Array.from(select.options).every(option => option.selected);
+        Array.from(select.options).forEach(option => option.selected = !allSelected);
+    }
+</script>
+
+
+
+<!--&lt;!&ndash; file_list.html &ndash;&gt;-->
+<!--<form method="get" action="{% url 'file_list' %}">-->
+<!--    <label for="data_source">Data Source:</label>-->
+<!--    <select id="data_source" name="data_source">-->
+<!--        <option value="">&#45;&#45;Select Data Source&#45;&#45;</option>-->
+<!--        {% for source in data_sources %}-->
+<!--            <option value="{{ source }}" {% if source == selected_data_source %}selected{% endif %}>-->
+<!--                {{ source }}-->
+<!--            </option>-->
+<!--        {% endfor %}-->
+<!--    </select>-->
+
+<!--    <label for="nation">Nation:</label>-->
+<!--    <select id="nation" name="nation">-->
+<!--        <option value="">&#45;&#45;Select Nation&#45;&#45;</option>-->
+<!--        {% for nation in nations %}-->
+<!--            <option value="{{ nation }}" {% if nation == selected_nation %}selected{% endif %}>-->
+<!--                {{ nation }}-->
+<!--            </option>-->
+<!--        {% endfor %}-->
+<!--    </select>-->
+
+<!--    <label for="year">Year:</label>-->
+<!--    <select id="year" name="year">-->
+<!--        <option value="">&#45;&#45;Select Year&#45;&#45;</option>-->
+<!--        {% for year in years %}-->
+<!--            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>-->
+<!--                {{ year }}-->
+<!--            </option>-->
+<!--        {% endfor %}-->
+<!--    </select>-->
+
+<!--    <label for="month">Month:</label>-->
+<!--    <select id="month" name="month">-->
+<!--        <option value="">&#45;&#45;Select Month&#45;&#45;</option>-->
+<!--        {% for month in months %}-->
+<!--            <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>-->
+<!--                {{ month }}-->
+<!--            </option>-->
+<!--        {% endfor %}-->
+<!--    </select>-->
+
+<!--    <button type="submit">Filter</button>-->
+<!--</form>-->
+
+<!--<table>-->
+<!--    <thead>-->
+<!--        <tr>-->
+<!--            <th>Data Source</th>-->
+<!--            <th>Nation</th>-->
+<!--            <th>Year</th>-->
+<!--            <th>Month</th>-->
+<!--            <th>Path</th>-->
+<!--            <th>Download</th>-->
+<!--        </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--        {% for record in file_records %}-->
+<!--        <tr>-->
+<!--            <td>{{ record.data_source }}</td>-->
+<!--            <td>{{ record.nation }}</td>-->
+<!--            <td>{{ record.year }}</td>-->
+<!--            <td>{{ record.month }}</td>-->
+<!--            <td>{{ record.path }}</td>-->
+<!--            <td><a href="{% url 'download_file' record.id %}">Download</a></td>-->
+<!--        </tr>-->
+<!--        {% endfor %}-->
+<!--    </tbody>-->
+<!--</table>-->
+
+

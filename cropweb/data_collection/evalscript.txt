@@ -1,0 +1,71 @@
+// VERSION=3
+function setup() {
+  return {
+    input: [{
+      bands: [
+        "B02", "B03", "B04", "B05", "B06",
+        "B07", "B08", "B8A", "B11", "B12",
+        "CLD", "SCL", "dataMask"
+      ],
+      units: "DN"
+    }],
+    output: {
+      id: "default",
+      bands: 10,  // 10개의 출력 밴드
+      sampleType: SampleType.FLOAT32
+    },
+    mosaicking: "ORBIT"  // 시간적으로 타일 모자이크
+  };
+}
+
+function evaluatePixel(samples) {
+  let count = samples.length; // 해당 날짜의 모든 타일 수
+
+  // 각 밴드의 합산 초기화
+  let sumB02 = 0, sumB03 = 0, sumB04 = 0, sumB05 = 0, sumB06 = 0;
+  let sumB07 = 0, sumB08 = 0, sumB8A = 0, sumB11 = 0, sumB12 = 0;
+  let validCount = 0;
+
+samples.forEach(sample => {
+    // 구름 마스킹 비트 조건
+    let cloud_bit_mask = 1 << 10; // Cloud 비트 마스크
+    let cirrus_bit_mask = 1 << 11; // Cirrus 비트 마스크
+
+    // 클라우드 또는 Cirrus 비트가 설정된 경우 필터링
+    if (
+      (sample.SCL & cloud_bit_mask) !== 0 || // Cloud 조건
+      (sample.SCL & cirrus_bit_mask) !== 0 //|| // Cirrus 조건
+      // sample.dataMask === 0 ||               // 데이터 마스크
+     //sample.CLD > 90                        // 구름 확률 90% 초과
+    ) return; // 조건에 맞는 픽셀은 건너뜀
+
+
+    // 유효한 샘플에 대해 각 밴드 값 누적
+    sumB02 += sample.B02 / 10000;
+    sumB03 += sample.B03 / 10000;
+    sumB04 += sample.B04 / 10000;
+    sumB05 += sample.B05 / 10000;
+    sumB06 += sample.B06 / 10000;
+    sumB07 += sample.B07 / 10000;
+    sumB08 += sample.B08 / 10000;
+    sumB8A += sample.B8A / 10000;
+    sumB11 += sample.B11 / 10000;
+    sumB12 += sample.B12 / 10000;
+
+    validCount++; // 유효한 샘플 수 증가
+  });
+
+  // 유효한 값이 있는 경우 평균 계산
+  return [
+    validCount > 0 ? sumB02 / validCount : 0,
+    validCount > 0 ? sumB03 / validCount : 0,
+    validCount > 0 ? sumB04 / validCount : 0,
+    validCount > 0 ? sumB05 / validCount : 0,
+    validCount > 0 ? sumB06 / validCount : 0,
+    validCount > 0 ? sumB07 / validCount : 0,
+    validCount > 0 ? sumB08 / validCount : 0,
+    validCount > 0 ? sumB8A / validCount : 0,
+    validCount > 0 ? sumB11 / validCount : 0,
+    validCount > 0 ? sumB12 / validCount : 0
+  ];
+}

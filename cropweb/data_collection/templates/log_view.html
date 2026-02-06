@@ -1,0 +1,40 @@
+<!-- templates/log_view.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Collection Logs</title>
+</head>
+<body>
+    <h1>Data Collection Logs</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Julian Day</th>
+                <th>File Path</th>
+                <th>File Size</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp }}</td>
+                <td>{{ log.status }}</td>
+                <td>{{ log.year }}</td>
+                <td>{{ log.month }}</td>
+                <td>{{ log.julian_day }}</td>
+                <td>{{ log.file_path }}</td>
+                <td>{{ log.file_size }}</td>
+                <td>{{ log.message }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
