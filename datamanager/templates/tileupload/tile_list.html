@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">📂 내 업로드 목록</h2>
+        <a href="{% url 'tile_upload' %}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded">
+            + 업로드
+        </a>
+    </div>
+    <div class="overflow-x-auto rounded-lg shadow">
+        <table class="min-w-full text-sm text-gray-700 bg-white">
+            <thead class="bg-gray-100 text-gray-700 border-b">
+            <tr>
+                <th class="px-5 py-3 text-left">📄 파일명</th>
+                <th class="px-5 py-3 text-center">⏰ 업로드일</th>
+                <th class="px-5 py-3 text-center">🗺️ 상태</th>
+                <th class="px-5 py-3 text-center">🗑️ 삭제</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 text-sm bg-white">
+            {% for tif in files %}
+            <tr onclick="location.href='{% url 'tile_result' tif.id %}'"
+                class="hover:bg-gray-50 cursor-pointer transition">
+                <td>{{ tif.original_filename }}</td>
+                <td class="px-5 py-3 text-center">{{ tif.uploaded_at|date:"Y-m-d H:i" }}</td>
+                <td class="px-5 py-3 text-center">
+                    {% if tif.status == 'success' %}
+                    <span class="text-green-600 font-medium">✅ 완료</span>
+                    {% elif tif.status == 'failed' %}
+                    <span class="text-red-500 font-medium">❌ 오류</span>
+                    {% elif tif.status == 'processing' %}
+                    <span class="text-blue-600 font-bold">변환 중</span>
+                    {% else %}
+                    <span class="text-gray-500">⏳ 대기 중</span>
+                    {% endif %}
+                </td>
+                <td class="px-5 py-3 text-center text-red-500"
+                    onclick="event.stopPropagation(); if(confirm('정말 삭제할까요?')) { window.location.href='{% url 'tile_delete' tif.id %}'; }">
+
+                    삭제
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="px-5 py-6 text-center text-gray-400">업로드한 파일이 없습니다.</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

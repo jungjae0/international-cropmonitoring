@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agricultural Environment Monitoring</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.1.1/nouislider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.1.1/nouislider.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+
+        /* 드롭다운 스타일 */
+        #dropdown {
+            margin: 10px; /* 드롭다운 간격 조정 */
+            z-index: 1001; /* 드롭다운이 cropSelect 위에 위치하도록 설정 */
+            position: absolute; /* 지도에 대해 절대 위치 */
+            left: 39%; /* 지도 가로 중앙 */
+            top: 90px; /* 지도 위쪽에서의 거리 */
+            padding: 10px; /* 패딩 추가 */
+            border: 1px solid #ccc; /* 테두리 */
+            border-radius: 5px; /* 둥근 모서리 */
+            background-color: white; /* 배경색 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+            width: 150px; /* 드롭다운 너비 */
+        }
+
+        #cropSelect {
+            margin: 10px; /* 드롭다운 간격 조정 */
+            z-index: 1000; /* 드롭다운이 위에 위치하도록 설정 */
+            position: absolute; /* 지도에 대해 절대 위치 */
+            right: 15px; /* 지도 왼쪽 상단에 위치 */
+            top: 10px; /* 지도 위쪽에서의 거리 */
+            padding: 10px; /* 패딩 추가 */
+            border: 1px solid #ccc; /* 테두리 */
+            border-radius: 5px; /* 둥근 모서리 */
+            background-color: white; /* 배경색 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+            width: 150px; /* 드롭다운 너비 */
+        }
+
+        #map1, #map2 {
+            height: 50vh; /* Set the height for both maps */
+            width: 50%; /* Set the width for both maps to fill half of the container */
+            position: relative; /* Ensure both maps are positioned correctly */
+            border: 2px solid black; /* Add black border around the maps */
+            margin: 0; /* Reset margin */
+        }
+
+        #controls {
+            margin-bottom: 10px;
+        }
+
+        .legend {
+            background: white;
+            padding: 10px;
+            border: 1px solid gray;
+            border-radius: 5px;
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            z-index: 1000;
+        }
+
+        .legend-item {
+            margin: 5px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        select {
+            width: 300px; /* Set the width of the dropdowns */
+            padding: 10px; /* Add padding */
+            margin: 10px 0; /* Add margin for spacing */
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #f9f9f9; /* Light background color */
+            appearance: none; /* Remove default styling */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'); /* Custom dropdown arrow */
+            background-repeat: no-repeat; /* Prevent repeating the background image */
+            background-position: right 10px center; /* Position the arrow */
+            background-size: 15px; /* Size of the dropdown arrow */
+        }
+
+        select:focus {
+            border-color: #4a90e2; /* Change border color on focus */
+            outline: none; /* Remove default outline */
+        }
+
+        button {
+            padding: 10px 15px; /* Button padding */
+            background-color: #4a90e2; /* Button background color */
+            color: white; /* Button text color */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 16px; /* Font size */
+        }
+
+        button:hover {
+            background-color: #357ab8; /* Darker color on hover */
+        }
+
+        #year-range {
+            margin: 20px 0;
+            width: 300px; /* Slider width */
+            margin-left: 1cm; /* Positioning */
+        }
+    </style>
+
+</head>
+<h1>Agricultural Environment Monitoring</h1>
+
+<body>
+
+<select id="dropdown">
+    <option value="">Select Crop</option>
+    <option value="Percent_Rice.tif">Rice</option>
+    <option value="Percent_Maize.tif">Maize</option>
+    <option value="Percent_Soybean.tif">Soybean</option>
+    <option value="Percent_Spring_Wheat.tif">Spring Wheat</option>
+    <option value="Percent_Winter_Wheat.tif">Winter Wheat</option>
+</select>
+
+<div style="display: flex;"> <!-- Wrap maps in a flex container -->
+
+    <div id="map1"></div>
+
+    <!-- Second map for Crop Filtering -->
+    <div id="map2">
+        <div id="controls">
+            <label for="cropSelect">Select Crop:</label>
+            <select id="cropSelect"></select>
+        </div>
+        <div class="legend" id="legend">
+            <h4>Growth Stage Legend</h4>
+            <div class="legend-item"><span class="legend-color" style="background: orange;"></span>Planting</div>
+            <div class="legend-item"><span class="legend-color" style="background: green;"></span>Vegetative</div>
+            <div class="legend-item"><span class="legend-color" style="background: red;"></span>Harvest</div>
+            <div class="legend-item"><span class="legend-color" style="background: rosybrown;"></span>End of Season
+            </div>
+            <div class="legend-item"><span class="legend-color" style="background: gray;"></span>Out of Season</div>
+            <div class="legend-item"><span class="legend-color" style="background: lightgray;"></span>Not Started</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/georaster"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
+    <script src="https://unpkg.com/geoblaze"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-ajax/src/leaflet.ajax.jsleaflet.ajax.js"></script>
+
+    <script>
+        // First map initialization
+        var map1 = L.map("map1").setView([0, 0], 2);
+        var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map1);
+
+        // Function to get color based on value
+        function getColor(value) {
+            return value > 7500 ? '#800026' :
+                value > 5000 ? '#BD0026' :
+                    value > 2500 ? '#E31A1C' :
+                        value > 0 ? '#FF7F00' :
+                            '#ffffff'; // White for 0%
+        }
+
+        var currentLayer; // Store the currently displayed layer
+
+        function addRasterLayer(url) {
+            fetch(url)
+                .then((response) => response.arrayBuffer())
+                .then((arrayBuffer) => {
+                    parseGeoraster(arrayBuffer).then((georaster) => {
+                        var layer = new GeoRasterLayer({
+                            georaster: georaster,
+                            opacity: 0.7,
+                            resolution: 128,
+                            pixelValuesToColorFn: function (values) {
+                                return values.map(value => getColor(value)); // Apply getColor to each value
+                            },
+                        });
+
+                        // Add the layer to the map
+                        if (currentLayer) {
+                            map1.removeLayer(currentLayer); // Remove the currently displayed layer
+                        }
+                        layer.addTo(map1); // Add the new layer
+                        currentLayer = layer; // Update currentLayer to the new layer
+                        map1.fitBounds(layer.getBounds()); // Fit bounds to the new layer
+
+                        // Map click event to display value
+                        map1.on("click", function (event) {
+                            var lat = event.latlng.lat;
+                            var lng = event.latlng.lng;
+                            var value = geoblaze.identify(georaster, [lng, lat]);
+
+                            // Divide value by 100 and create percentage
+                            var percentageValue = value / 100;
+
+                            // Remove previous marker
+                            map1.eachLayer(function (layer) {
+                                if (layer instanceof L.Marker) {
+                                    map1.removeLayer(layer);
+                                }
+                            });
+
+                            // Add popup with marker
+                            var marker = L.marker([lat, lng])
+                                .addTo(map1)
+                                .bindPopup("Value: " + (percentageValue).toFixed(2) + "%")
+                                .openPopup();
+                        });
+                    });
+                });
+        }
+
+        // Handle dropdown change for the first map
+        document.getElementById("dropdown").addEventListener("change", function () {
+            var selectedValue = this.value;
+            if (selectedValue) {
+                addRasterLayer("../static/" + selectedValue);
+            }
+        });
+
+        // Second map initialization
+        // Second map initialization
+
+        // Function to determine the current day of the year
+        function getCurrentDOY() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0);
+            const diff = now - start;
+            return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1; // +1 for 1-indexed
+        }
+
+        // Growth stage determination function
+        function determineGrowthStage(row) {
+            const currentDOY = getCurrentDOY();
+            if (row.planting <= currentDOY && currentDOY < row.vegetative) {
+                return 'Planting';
+            } else if (row.vegetative <= currentDOY && currentDOY < row.harvest) {
+                return 'Vegetative';
+            } else if (row.harvest <= currentDOY && currentDOY < row.endofseaso) {
+                return 'Harvest';
+            } else if (row.endofseaso <= currentDOY && currentDOY < row.outofseaso) {
+                return 'End of Season';
+            } else if (currentDOY >= row.outofseaso) {
+                return 'Out of Season';
+            } else {
+                return 'Not Started';
+            }
+        }
+
+        // Color map for growth stages
+        const colorMap = {
+            'Planting': 'green',
+            'Vegetative': 'yellow',
+            'Harvest': 'orange',
+            'End of Season': 'brown',
+            'Out of Season': 'gray',
+            'Not Started': 'lightgray'
+        };
+
+
+        const map2 = L.map('map2').setView([0, 0], 2); // Start with a global view
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map2);
+        fetch('../static/crop_calendar.geojson')
+        .then(response => response.json())
+        .then(data => {
+            const crops = [...new Set(data.features.map(feature => feature.properties.crop))];
+
+            // Populate the crop selection dropdown
+            const cropSelect = document.getElementById('cropSelect');
+            crops.forEach(crop => {
+                const option = document.createElement('option');
+                option.value = crop;
+                option.textContent = crop;
+                cropSelect.appendChild(option);
+            });
+
+            // Add GeoJSON layer to map based on selected crop
+            function updateMap() {
+                const selectedCrop = cropSelect.value;
+                map2.eachLayer(layer => {
+                    if (layer instanceof L.GeoJSON) {
+                        map2.removeLayer(layer);
+                    }
+                });
+
+                const filteredFeatures = data.features.filter(feature => feature.properties.crop === selectedCrop);
+
+                const geoJsonLayer = L.geoJSON(filteredFeatures, {
+                    style: feature => {
+                        const growthStage = determineGrowthStage(feature.properties);
+                        return {
+                            fillColor: 'transparent',
+                            color: colorMap[growthStage],
+                            weight: 2,
+                            fillOpacity: 0
+                        };
+                    },
+                    onEachFeature: (feature, layer) => {
+                        const { crop, country, region } = feature.properties;
+                        layer.bindPopup(`<strong>Crop:</strong> ${crop}<br><strong>Country:</strong> ${country}<br><strong>Region:</strong> ${region}`);
+                    }
+                }).addTo(map2);
+
+                if (filteredFeatures.length > 0) {
+                    const bounds = geoJsonLayer.getBounds();
+                    map2.fitBounds(bounds);
+                }
+            }
+
+            // Add event listener for crop selection change
+            cropSelect.addEventListener('change', updateMap);
+            updateMap(); // Initial call to populate map
+        })
+        .catch(error => console.error('Error loading GeoJSON data:', error));
+
+
+
+    </script>
+</div>
+
+</body>
+
+
+<body>
+
+<label for="country">Country:</label>
+<select id="country"></select>
+
+<label for="region">Region:</label>
+<select id="region"></select>
+
+<label for="crop">Crop:</label>
+<select id="crop"></select>
+
+<label for="elements">Element to Visualize:</label>
+<select id="elements"></select>
+
+<div style="margin-top: 1cm;">
+    <label for="year-range">Year Range:</label>
+    <div id="year-range" style="display: inline-block; margin-right: 20px;"></div>
+
+    <div style="display: inline-block;">
+        <button id="plot-button" style="margin-left: 2cm;">Plot</button> <!-- Set left margin to create space -->
+    </div>
+
+    <div style="margin-top: 0.5cm;"> <!-- Adjust margin for spacing -->
+        <span style="color: white;"><span id="start-year-label">2015</span></span>
+        <span style="margin-left: 20px; color: white;"><span id="end-year-label">2024</span></span>
+
+    </div>
+
+    <div id="plot"></div>
+</div>
+
+
+<!--<div style="margin-top: 1cm; display: flex; align-items: center;"> &lt;!&ndash; Use flexbox for alignment &ndash;&gt;-->
+
+<!--</div>-->
+
+
+<script>
+
+
+    $(document).ready(function () {
+        // 국가 목록 불러오기
+        $.getJSON("/crop_monitoring/countries", function (countries) {
+            $('#country').empty().append('<option>Select Country</option>');
+            countries.forEach(country => {
+                $('#country').append(`<option value="${country}">${country}</option>`);
+            });
+        });
+
+        // 국가 선택 시 지역 목록 업데이트
+        $('#country').change(function () {
+            const country = $(this).val();
+            $.getJSON(`/crop_monitoring/regions?country=${country}`, function (regions) {
+                $('#region').empty().append('<option>Select Region</option>');
+                regions.forEach(region => {
+                    $('#region').append(`<option value="${region}">${region}</option>`);
+                });
+            });
+            $.getJSON("/crop_monitoring/elements", function (elements) {
+                $('#elements').empty().append('<option>Select Element</option>');
+                elements.forEach(element => {
+                    $('#elements').append(`<option value="${element}">${element}</option>`);
+                });
+            });
+        });
+
+        // 지역 선택 시 작물 목록 업데이트
+        $('#region').change(function () {
+            const country = $('#country').val();
+            const region = $(this).val();
+            $.getJSON(`/crop_monitoring/crops?country=${country}&region=${region}`, function (crops) {
+                $('#crop').empty().append('<option>Select Crop</option>');
+                crops.forEach(crop => {
+                    $('#crop').append(`<option value="${crop}">${crop}</option>`);
+                });
+            });
+        });
+
+        // noUiSlider 초기화
+        var yearSlider = document.getElementById('year-range');
+        noUiSlider.create(yearSlider, {
+            start: [2015, 2024],
+            connect: true,
+            range: {
+                'min': 2015,
+                'max': 2024
+            },
+            step: 1,
+            tooltips: true,
+
+        });
+
+        // 슬라이드바 값 변경 시 연도 업데이트
+        yearSlider.noUiSlider.on('update', function (values) {
+            const startYear = Math.round(values[0]);
+            const endYear = Math.round(values[1]);
+            document.getElementById('start-year-label').textContent = startYear;
+            document.getElementById('end-year-label').textContent = endYear;
+        });
+        $('#plot-button').click(function () {
+            const country = $('#country').val();
+            const region = $('#region').val();
+            const crop = $('#crop').val();
+            const yearRange = yearSlider.noUiSlider.get();
+            const startYear = Math.round(yearRange[0]);
+            const endYear = Math.round(yearRange[1]);
+            const element = $('#elements').val(); // Ensure you are using the correct ID
+
+            console.log('Plot button clicked with parameters:', {
+                country, region, crop, startYear, endYear, element
+            });
+
+            $.ajax({
+                url: `/crop_monitoring/filter_data`,
+                type: 'GET',
+                data: {
+                    country: country,
+                    region: region,
+                    crop: crop,
+                    start_year: startYear,
+                    end_year: endYear,
+                    element: element
+                },
+
+                success: function (data) {
+                    console.log('Data received:', data);
+                    const x = data.data.map(d => d.doy);
+                    const y = data.data.map(d => d[element]);
+                    const yearGroups = [...new Set(data.data.map(d => d.year))];
+
+                    const traces = yearGroups.map(year => ({
+                        x: x.filter((_, i) => data.data[i].year === year),
+                        y: y.filter((_, i) => data.data[i].year === year),
+                        mode: 'lines',
+                        name: year,
+                    }));
+
+                    // Add vertical line traces
+                    const verticalLineTraces = [
+                        {
+                            x: [data.vegetative, data.vegetative],
+                            y: [Math.min(...y), Math.max(...y)],
+                            mode: 'lines',
+                            name: 'Vegetative',
+                            line: {
+                                color: 'green',
+                                width: 2,
+                                dash: 'solid',
+                            },
+                            showlegend: true, // Show this line in the legend
+                            hovertemplate: 'Vegetative'  // Show only y value
+
+                        },
+                        {
+                            x: [data.planting, data.planting],
+                            y: [Math.min(...y), Math.max(...y)],
+                            mode: 'lines',
+                            name: 'Planting',
+                            line: {
+                                color: 'brown',
+                                width: 2,
+                                dash: 'dash',
+                            },
+                            showlegend: true, // Show this line in the legend
+                            hovertemplate: 'Planting'  // Show only y value
+                        },
+                        {
+                            x: [data.harvest, data.harvest],
+                            y: [Math.min(...y), Math.max(...y)],
+                            mode: 'lines',
+                            name: 'Harvest',
+                            line: {
+                                color: 'red',
+                                width: 2,
+                                dash: 'dash',
+                            },
+                            showlegend: true, // Show this line in the legend
+                            hovertemplate: 'Harvest'  // Show only y value
+                        }
+                    ];
+
+                    const layout = {
+                        title: `${element} Over Time`,
+                        xaxis: {title: 'Day of Year (DOY)'},
+                        yaxis: {title: element},
+                    };
+
+                    // Combine all traces including the vertical lines
+                    const allTraces = [...traces, ...verticalLineTraces];
+
+                    Plotly.newPlot('plot', allTraces, layout);
+                }
+
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

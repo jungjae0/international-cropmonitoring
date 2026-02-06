@@ -1,0 +1,7 @@
+pandas
+fastapi
+uvicorn
+numpy
+Jinja2
+fastapi
+gunicorn

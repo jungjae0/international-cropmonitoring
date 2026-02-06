@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">🌍 TIF 업로드 및 변화</h2>
+
+    <form id="upload-form" method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- 파일 선택 -->
+        <div>
+            <div class="flex items-center space-x-4">
+                <label for="id_file"
+                       class="cursor-pointer bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow text-sm">
+                    파일 선택
+                </label>
+                <span id="file-name" class="text-gray-600 text-sm">선택된 파일이 없습니다.</span>
+            </div>
+            <input type="file" name="file" id="id_file" class="hidden" required onchange="updateFileName(this)">
+        </div>
+
+        <h3 class="text-lg font-bold mt-4 mb-2">색상-이름 매핑 입력</h3>
+        <div id="label-container" class="space-y-2"></div>
+        <div class="mt-2">
+            <button type="button" id="add-label-btn" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                + 색상-이름 추가
+            </button>
+        </div>
+
+        <!-- 해\uub2f9 필드는 Django에서 만들어줌 -->
+        {{ form.color_label_json }}
+
+         <!-- Django form 오류 표시 -->
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {% if field.name != "file" and field.name != "color_label_json" %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if error_message %}
+        <div class="text-red-600 text-sm">
+            {{ error_message }}
+        </div>
+        {% endif %}
+
+        <!-- 제출 버튼 -->
+        <div class="text-center">
+            <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md shadow transition">
+                업로드 및 변화
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const maxLabels = 5;
+    let labelCount = 0;
+
+    const defaultColors = [
+      { name: "주황", code: "#f97316" },
+      { name: "빨간", code: "#ef4444" },
+      { name: "청록", code: "#22c55e" },
+      { name: "파란", code: "#3b82f6" },
+      { name: "보라", code: "#a855f7" },
+    ];
+
+    function createLabelField(value = "", color = "#f97316", label = "") {
+      if (labelCount >= maxLabels) return;
+
+      const container = document.createElement("div");
+      container.className = "flex space-x-2 items-center";
+
+      container.innerHTML = `
+        <input type="number" min="0" placeholder="번호" value="${value}" class="w-16 border rounded px-2 py-1" required>
+        <select class="border rounded px-2 py-1">
+          ${defaultColors.map(c =>
+            `<option value="${c.code}" ${c.code === color ? "selected" : ""}>${c.name}</option>`).join("")}
+        </select>
+        <input type="text" placeholder="이름" value="${label}" class="border rounded px-2 py-1" required>
+        <button type="button" class="remove-btn text-red-500 hover:text-red-700">❌</button>
+      `;
+
+      container.querySelector(".remove-btn").addEventListener("click", () => {
+        container.remove();
+        labelCount = Math.max(labelCount - 1, 0);
+      });
+
+      document.getElementById("label-container").appendChild(container);
+      labelCount++;
+    }
+
+    document.getElementById("add-label-btn").addEventListener("click", () => {
+      if (labelCount < maxLabels) createLabelField();
+    });
+
+    createLabelField();
+
+    window.updateFileName = function (input) {
+      const fileName = input.files.length > 0 ? input.files[0].name : "선택된 파일이 없습니다.";
+      document.getElementById("file-name").textContent = fileName;
+    }
+
+    const form = document.getElementById("upload-form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const labels = [];
+      const rows = document.querySelectorAll("#label-container > div");
+
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll("input, select");
+        const value = parseInt(inputs[0].value);
+        const color = inputs[1].value;
+        const label = inputs[2].value;
+        if (!isNaN(value) && label.trim() !== "") {
+          labels.push({ value, color, label });
+        }
+      });
+
+      if (labels.length === 0) {
+        alert("최소 하나 이상의 색상-이름 매핑을 입력해야 합니다.");
+        return;
+      }
+
+      const hiddenInput = document.querySelector('[name="color_label_json"]');
+      if (hiddenInput) {
+        hiddenInput.value = JSON.stringify(labels);
+        console.log("✅ color_label_json 설정 완료", labels);
+        form.submit();
+      } else {
+        alert("color_label_json input 필드를 찾을 수 없습니다.");
+      }
+    });
+  });
+</script>
+{% endblock %}

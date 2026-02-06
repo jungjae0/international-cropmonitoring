@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-xl mx-auto text-center mb-8">
+        <h2 class="text-xl font-bold mb-4">결과 지도</h2>
+    </div>
+    <!--    <a>{{ tile_url }}</a>-->
+    {% if tif.status == 'pending' %}
+    <div class="text-yellow-600 font-semibold mb-4">⏳ 작업 대기 중입니다...</div>
+    {% elif tif.status == 'processing' %}
+    <div class="text-blue-600 font-semibold mb-4">🔄 변환 작업이 진행 중입니다...</div>
+    {% elif tif.status == 'success' %}
+    <div id="map">
+        <div id="basemapslidercontainer">
+            <div id="basemapslider"></div>
+        </div>
+    </div>
+
+
+    {% elif tif.status == 'failed' %}
+    <div class="text-red-600 font-semibold mb-2">❌ 변환 작업이 실패하였습니다.</div>
+    {% if tif.error_message %}
+    <div class="text-sm text-gray-700 bg-red-100 border border-red-300 p-2 rounded">
+        오류 내용: {{ tif.error_message }}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="text-gray-600">알 수 없는 상태입니다.</div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block script_extra %}
+
+<!-- Tailwind (optional here) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Leaflet & jQuery UI -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-providers@latest/leaflet-providers.js"></script>
+<!-- 지도 및 슬라이더 스타일 -->
+<style>
+    #map {
+        position: relative;
+        height: 500px;
+        width: 100%;
+        border-radius: 1rem;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    #basemapslidercontainer {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    #basemapslider {
+        height: 100px;
+        width: 10px;
+        background-color: #ccc;
+        border-radius: 10px;
+    }
+
+
+    .legend-box {
+        position: absolute;
+        bottom: 30px;
+        left: 20px;
+        background: white;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.4;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        border-radius: 3px;
+        border: 1px solid #aaa;
+    }
+</style>
+
+<!-- 지도 초기화 스크립트 -->
+<script>
+      const legendItems = {{ legend_json|safe }};
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const map = L.map('map').setView([40.5, -100], 5);
+
+        const noneLayer = L.layerGroup();  // 아무것도 없는 빈 레이어
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        });
+
+        const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20,
+        });
+
+        const Esri_Gray = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 16
+        });
+        const CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd',
+            maxZoom: 20
+        });
+        const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+
+        const OpenAIP = L.tileLayer('https://{s}.tile.maps.openaip.net/geowebcache/service/tms/1.0.0/openaip_basemap@EPSG%3A900913@png/{z}/{x}/{y}.{ext}', {
+            ext: 'png',
+            minZoom: 4,
+            maxZoom: 14,
+            tms: true,
+            detectRetina: true,
+            subdomains: '12'
+        });
+
+
+        const tileLayer = L.tileLayer('{{ tile_url }}{z}/{x}/{y}.png', {
+            tms: true,
+            maxZoom: 13,
+            opacity: 1,
+        }).addTo(map);
+
+          const baseMaps = {
+            "OSM": osm,
+            "Dark": dark,
+            "Esri Gray": Esri_Gray,
+            "CartoDB": CartoDB_Positron,
+            "none": noneLayer,
+            "Esri World": Esri_WorldImagery
+        };
+
+        const overlayMaps = {
+            "입력 레이어": tileLayer
+        };
+
+        L.control.layers(baseMaps, overlayMaps, {position: 'topright', collapsed: false}).addTo(map);
+
+        Esri_Gray.addTo(map);
+
+        const legend = L.control({ position: 'bottomleft' });
+
+legend.onAdd = function (map) {
+  const div = L.DomUtil.create('div', 'info legend');
+  div.innerHTML = `
+    <div style="padding: 6px 10px; background: white; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
+      ${legendItems.map(item => `
+        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+          <span style="width: 14px; height: 14px; background-color: ${item.color}; display: inline-block; margin-right: 8px; border: 1px solid #666;"></span>
+          ${item.label} (${item.value})
+        </div>
+      `).join('')}
+    </div>
+  `;
+  return div;
+};
+
+legend.addTo(map);
+
+
+
+        $("#basemapslider").slider({
+            animate: true,
+            value: 1,
+            orientation: "vertical",
+            min: 0,
+            max: 1,
+            step: 0.1,
+            slide: function (event, ui) {
+                tileLayer.setOpacity(ui.value);
+            }
+        });
+
+        $('#basemapslider')
+            .mousedown(() => map.dragging.disable())
+            .mouseup(() => map.dragging.enable());
+    });
+</script>
+
+{% endblock %}

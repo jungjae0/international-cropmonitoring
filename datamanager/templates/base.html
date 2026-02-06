@@ -1,0 +1,47 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+
+    <meta charset="UTF-8">
+    <title>{% block title %}작물 구분도 제작 시스템{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ✅ 공통 헤더 -->
+<header class="relative flex justify-between items-center px-6 py-4 bg-white shadow-md border-b mb-6">
+
+    <!-- ✅ 가운데 메뉴: absolute center -->
+    <nav class="absolute left-1/2 -translate-x-1/2 flex gap-6 text-lg font-bold text-gray-700">
+        <a href="{% url 'tile_list' %}" class="hover:text-blue-600">🗺️ 래스터 업로드</a>
+    </nav>
+
+    <!-- 오른쪽 유저 정보 -->
+    {% if user.is_authenticated %}
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-gray-700 font-medium">
+        👤 {{ user.username }}
+      </span>
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md text-sm">
+                로그아웃
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</header>
+<!-- ✅ 본문 영역 -->
+<main class="flex justify-center">
+    {% block content %}
+    {% endblock %}
+
+
+</main>
+{% block script_extra %}
+{% endblock %}
+</body>
+</html>

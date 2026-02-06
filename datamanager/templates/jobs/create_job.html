@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}작업 요청{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+  <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">작업 요청</h2>
+
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">{{ field.label_tag }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <p class="text-red-500 text-sm mt-1">{{ field.errors }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition">
+      작업 시작
+    </button>
+
+    <div class="mt-4">
+      <a href="{% url 'job_list' %}" class="block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-xl transition">
+        작업 목록
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

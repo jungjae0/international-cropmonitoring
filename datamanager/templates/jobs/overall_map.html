@@ -1,0 +1,149 @@
+
+{% extends 'base.html' %}
+{% block title %}전체 지도 보기{% endblock %}
+
+{% block content %}
+
+<style>
+      #basemapslidercontainer {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    #basemapslider {
+        height: 100px;
+        width: 10px;
+        background-color: #ccc;
+        border-radius: 10px;
+    }
+</style>
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-xl mx-auto text-center mb-8">
+  <h2 class="text-xl font-bold mb-4">전체 지도 보기</h2>
+
+  <form method="get" class="flex justify-center flex-wrap items-center gap-4">
+    <label class="text-sm">
+      작물:
+      <select name="crop" class="border px-2 py-1 rounded">
+        {% for crop in crops %}
+          <option value="{{ crop }}" {% if crop == selected_crop %}selected{% endif %}>{{ crop }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="text-sm">
+      연도:
+      <select name="year" class="border px-2 py-1 rounded">
+        {% for y in years %}
+          <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded">
+      조회
+    </button>
+  </form>
+</div>
+
+  {% if tiles %}
+    <div id="map" class="h-[600px] border rounded">
+      <!-- 슬라이더 UI 위치 -->
+<div id="basemapslidercontainer">
+  <div id="basemapslider"></div>
+</div>
+
+    </div>
+  {% else %}
+    <p class="text-sm text-gray-500">선택된 조건에 해당하는 지도 데이터가 없습니다.</p>
+  {% endif %}
+
+        <div class="mt-8 text-center">
+            <a href="{% url 'create_job' %}" class="text-blue-600 hover:underline">← 새 작업 생성</a>
+            <a href="{% url 'job_list' %}" class="text-blue-600 hover:underline ml-4">작업 목록 →</a>
+        </div>
+</div>
+
+
+{% if tiles %}
+<script>
+  const map = L.map('map').setView([40.5, -100], 5.0);
+
+  const baselayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+const resultLayers = {};   // Leaflet control용
+const allTileLayers = [];  // 슬라이더 대상용
+
+  {% for tile in tiles %}
+    const tileLayer{{ forloop.counter }} = L.tileLayer('{{ tile.tile_path }}/{{ "{z}/{x}/{y}.png" }}', {
+      maxZoom: 13,
+      tms: true,
+    }).addTo(map);
+  resultLayers["{{ tile.region }}"] = tileLayer{{ forloop.counter }};
+  allTileLayers.push(tileLayer{{ forloop.counter }});
+    {% if forloop.first %}
+      var mytile = tileLayer{{ forloop.counter }};
+    {% endif %}
+  {% endfor %}
+
+  L.control.layers({ 'Basemap': baselayer }, resultLayers).addTo(map);
+
+  // 슬라이더로 mytile의 투명도 조절
+$("#basemapslider").slider({
+  animate: true,
+  value: 1,
+  orientation: "vertical",
+  min: 0,
+  max: 1,
+  step: 0.1,
+  slide: function (event, ui) {
+    allTileLayers.forEach(layer => layer.setOpacity(ui.value));
+  }
+});
+
+$('#basemapslider').mousedown(() => map.dragging.disable())
+                    .mouseup(() => map.dragging.enable());
+
+
+
+const legend = L.control({ position: 'bottomleft' });
+
+legend.onAdd = function (map) {
+  const div = L.DomUtil.create('div', 'info legend');
+  div.innerHTML = `
+    <div style="padding: 6px 10px; background: white; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
+      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+        <span style="width: 14px; height: 14px; background-color: #ff0000; display: inline-block; margin-right: 8px; border: 1px solid #666;"></span>
+        겨울밀 (Winter Wheat)
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span style="width: 14px; height: 14px; background-color: #04bc00; display: inline-block; margin-right: 8px; border: 1px solid #666;"></span>
+        봄밀 (Spring Wheat)
+      </div>
+    </div>
+  `;
+  return div;
+};
+
+legend.addTo(map);
+</script>
+
+{% endif %}
+{% endblock %}
+
+

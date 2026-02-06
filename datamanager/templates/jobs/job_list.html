@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load job_extras %}
+
+{% block content %}
+
+
+<div class="container mx-auto px-4 py-8">
+<div class="flex items-center justify-between mb-6">
+  <!-- 왼쪽: 제목 -->
+  <h1 class="text-2xl font-bold">🤖 작업 목록</h1>
+
+  <!-- 오른쪽: 버튼 그룹 -->
+  <div class="flex gap-2">
+    <a href="{% url 'overall_map' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">
+      전체 지도 보기
+    </a>
+    <a href="{% url 'create_job' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
+      + 새 작업 생성
+    </a>
+  </div>
+</div>
+
+  <div class="bg-white shadow-lg rounded-2xl w-full">
+    <table class="w-full table-fixed divide-y divide-gray-200">
+      <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+        <tr>
+          <th class="px-4 py-3">작물</th>
+          <th class="px-4 py-3">지역</th>
+          <th class="px-4 py-3">연도</th>
+          <th class="px-4 py-3">상태</th>
+          <th class="px-4 py-3">단계</th>
+          <th class="px-4 py-3">진행률</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100 text-sm">
+        {% for job in jobs %}
+        <tr onclick="location.href='{% url 'job_detail' job.id %}'"
+            class="hover:bg-gray-100 cursor-pointer transition">
+          <td class="px-4 py-3">{{ job.get_crop_type_display }}</td>
+          <td class="px-4 py-3">{{ job.region }}</td>
+          <td class="px-4 py-3">{{ job.year }}</td>
+          <td class="px-4 py-3">
+            {% if job.status == 'done' %}
+              <span class="text-green-600 font-semibold">완료</span>
+            {% elif job.status == 'failed' %}
+              <span class="text-red-600 font-semibold">실패</span>
+            {% else %}
+              <span class="text-blue-600 font-semibold">진행 중</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">{{ job.current_step|step_label }}</td>
+          <td class="px-4 py-3">{{ job.progress }}%</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center px-4 py-6 text-gray-500">등록된 작업이 없습니다.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load job_extras %}
+
+{% block content %}
+
+<body class="bg-gray-100 py-10 font-sans">
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="bg-white shadow-md rounded-2xl p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">작업 상세 정보</h2>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-center text-gray-700 table-auto border">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-3 font-semibold">작물</th>
+                        <th class="px-4 py-3 font-semibold">연도</th>
+                        <th class="px-4 py-3 font-semibold">지역</th>
+                        <th class="px-4 py-3 font-semibold">상태</th>
+                        <th class="px-4 py-3 font-semibold">현재 단계</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-t">
+                        <td class="px-4 py-3">{{ job.get_crop_type_display }}</td>
+                        <td class="px-4 py-3">{{ job.year }}</td>
+                        <td class="px-4 py-3">{{ job.get_region_display }}</td>
+                        <td class="px-4 py-3" id="status">{{ job.get_status_display }}</td>
+                        <td class="px-4 py-3" id="step">{{ job.current_step|step_label }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="bg-white shadow-md rounded-2xl p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">단계별 진행상황</h3>
+            <div id="steps" class="space-y-4">
+                <div class="step">
+                    <p class="font-medium text-gray-700">① 데이터 다운로드</p>
+                    <div class="progress-bg">
+                        <div class="progress-bar" id="progress-download" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <p class="font-medium text-gray-700">② 모델 추론</p>
+                    <div class="progress-bg">
+                        <div class="progress-bar" id="progress-model" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <p class="font-medium text-gray-700">③ 타일 생성</p>
+                    <div class="progress-bg">
+                        <div class="progress-bar" id="progress-tiles" style="width: 0%;">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error-section" class="mt-6 bg-red-100 border border-red-300 text-red-800 rounded-lg p-4"
+                 style="display: none;">
+                <h3 class="font-bold mb-2">실패 사유</h3>
+                <pre id="error-message" class="whitespace-pre-wrap text-sm"></pre>
+            </div>
+        </div>
+
+        {% if job.status == 'done' %}
+
+        <div class="bg-white shadow-md rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">결과 지도</h3>
+                <a href="{% url 'download_tif' job.id %}"
+                   class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md text-sm">
+                    다운로드 (.tif)
+                </a>
+            </div>
+            <div id="map">
+                <div id="basemapslidercontainer">
+                    <div id="basemapslider"></div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-purple-700 text-sm font-bold mt-4">
+            ※ 결과 지도가 생성되지 않았습니다. 타일 생성 완료 후 확인 가능합니다.
+        </div>
+        {% endif %}
+
+        <div class="mt-8 text-center">
+            <a href="{% url 'create_job' %}" class="text-blue-600 hover:underline">← 새 작업 생성</a>
+            <a href="{% url 'job_list' %}" class="text-blue-600 hover:underline ml-4">작업 목록 →</a>
+        </div>
+    </div>
+
+</div>
+</body>
+{% endblock %}
+{% block script_extra %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Leaflet & jQuery UI -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-providers@latest/leaflet-providers.js"></script>
+<style>
+    #map {
+        position: relative;
+        height: 500px;
+        width: 100%;
+        border-radius: 1rem;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    #basemapslidercontainer {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    #basemapslider {
+        height: 100px;
+        width: 10px;
+        background-color: #ccc;
+        border-radius: 10px;
+    }
+
+    .progress-bg {
+        width: 100%;
+        background-color: #e5e7eb; /* 연한 회색 */
+        height: 40px; /* 원하는 만큼 높이 */
+        border-radius: 9999px;
+        margin-bottom: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-bar {
+        background-color: #00af0a; /* 파란색 */
+        height: 100%;
+        width: 0%;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9999px;
+        transition: width 0.4s ease;
+    }
+
+    .progress-bar.error {
+        background-color: #ef4444; /* 빨간색 */
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background-color: #45a049;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+    }
+
+</style>
+
+<script>
+    const jobId = "{{ job.id }}"
+
+
+    function updateStatus() {
+        fetch(`/jobs/${jobId}/status/`)
+            .then(response => response.json())
+            .then(data => {
+                const status = data.status;
+                const step = data.current_step;
+                const progress = data.progress;
+
+                document.getElementById('status').innerText = status;
+                document.getElementById('step').innerText = step;
+
+                const bars = {
+                    downloading: document.getElementById('progress-download'),
+                    model_inference: document.getElementById('progress-model'),
+                    generating_tiles: document.getElementById('progress-tiles')
+                };
+
+                // 단계 순서를 배열로 정의
+                const steps = ['downloading', 'model_inference', 'generating_tiles'];
+
+                // 모든 진행바 초기화
+                for (let key in bars) {
+                    bars[key].style.width = '0%';
+                    bars[key].innerText = '0%';
+                    bars[key].classList.remove('error');
+                }
+
+                if (status === 'failed') {
+                    let failedIndex = steps.indexOf(step);
+
+                    steps.forEach((s, i) => {
+                        if (i < failedIndex) {
+                            bars[s].style.width = '100%';
+                            bars[s].innerText = '100%';
+                        } else if (i === failedIndex) {
+                            bars[s].classList.add('error');
+                            bars[s].style.width = '100%';
+                            bars[s].innerText = 'Error';
+                        }
+                    });
+
+                    document.getElementById('error-section').style.display = 'block';
+                    document.getElementById('error-message').innerText = data.error_message;
+                    clearInterval(pollingInterval);
+                    return;
+                }
+
+                if (step === 'downloading') {
+                    bars.downloading.style.width = progress + '%';
+                    bars.downloading.innerText = progress + '%';
+                } else if (step === 'model_inference') {
+                    bars.downloading.style.width = '100%';
+                    bars.downloading.innerText = '100%';
+                    bars.model_inference.style.width = progress + '%';
+                    bars.model_inference.innerText = progress + '%';
+                } else if (step === 'generating_tiles') {
+                    bars.downloading.style.width = '100%';
+                    bars.model_inference.style.width = '100%';
+                    bars.generating_tiles.style.width = progress + '%';
+                    bars.generating_tiles.innerText = progress + '%';
+                } else if (step === 'finished' || status === 'done') {
+                    bars.downloading.style.width = '100%';
+                    bars.model_inference.style.width = '100%';
+                    bars.generating_tiles.style.width = '100%';
+                    bars.downloading.innerText = '100%';
+                    bars.model_inference.innerText = '100%';
+                    bars.generating_tiles.innerText = '100%';
+                    clearInterval(pollingInterval);
+                }
+            });
+    }
+
+    const pollingInterval = setInterval(updateStatus, 3000);
+
+    $(document).ready(function () {
+        const map = L.map('map').setView([40.5, -100], 5.0);
+
+
+        const noneLayer = L.layerGroup();  // 아무것도 없는 빈 레이어
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        });
+
+        const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20,
+        });
+
+        const Esri_Gray = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 16
+        });
+        const CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd',
+            maxZoom: 20
+        });
+        const OpenAIP = L.tileLayer('https://{s}.tile.maps.openaip.net/geowebcache/service/tms/1.0.0/openaip_basemap@EPSG%3A900913@png/{z}/{x}/{y}.{ext}', {
+            ext: 'png',
+            minZoom: 4,
+            maxZoom: 14,
+            tms: true,
+            detectRetina: true,
+            subdomains: '12'
+        });
+
+        const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {});
+
+        const mytile = L.tileLayer('/media/{{ job.crop_type }}/{{ job.region }}/{{ job.year }}/tiles/{z}/{x}/{y}.png', {
+            maxZoom: 13,
+            tms: true,
+            attribution: ''
+        }).addTo(map);
+
+
+        const baseMaps = {
+            "OSM": osm,
+            "Dark": dark,
+            "Esri Gray": Esri_Gray,
+            "CartoDB": CartoDB_Positron,
+            "none": noneLayer,
+            "Esri World": Esri_WorldImagery
+        };
+
+        const overlayMaps = {
+            "결과 레이어": mytile
+        };
+
+        L.control.layers(baseMaps, overlayMaps, {position: 'topright', collapsed: false}).addTo(map);
+
+        Esri_Gray.addTo(map);
+
+        // ✅ 범례 추가
+        const legend = L.control({position: 'bottomleft'});
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML = `
+        <div style="padding: 6px 10px; background: white; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
+          <div style="display: flex; align-items: center; margin-bottom: 4px;">
+            <span style="width: 14px; height: 14px; background-color: #4CAF50; display: inline-block; margin-right: 8px; border: 1px solid #666;"></span>
+            겨울밀 (Winter Wheat)
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span style="width: 14px; height: 14px; background-color: #ff0000; display: inline-block; margin-right: 8px; border: 1px solid #666;"></span>
+            봄밀 (Spring Wheat)
+          </div>
+        </div>
+      `;
+            return div;
+        };
+        legend.addTo(map);
+
+        // ✅ 슬라이더 (오른쪽 하단)
+        $("#basemapslider").slider({
+            animate: true,
+            value: 1,
+            orientation: "vertical",
+            min: 0,
+            max: 1,
+            step: 0.1,
+            slide: function (event, ui) {
+                mytile.setOpacity(ui.value);
+            }
+        });
+
+        $('#basemapslider')
+            .mousedown(() => map.dragging.disable())
+            .mouseup(() => map.dragging.enable());
+    });
+
+
+</script>
+
+{% endblock %}
